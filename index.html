@@ -350,7 +350,7 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
   </div>
 
   <footer>
-    <span><b>$</b> última atualização: 2 out 2026</span>
+    <span><b>$</b> última atualização: 4 out 2026</span>
     <span>Data errada, ficheiro em falta ou problema? Fala com a Rafa.</span>
   </footer>
 </div>
@@ -366,6 +366,7 @@ const UC = {
 };
 // d: "ano-mês-dia" · s/e: hora início/fim opcional · k: tipo · x: nota · tags: etiquetas
 const EVENTS = [
+  {uc:"fp", d:"2026-10-06", t:"Lista 1 · Exercícios 2, 3, 4 e 5", k:"Entrega", x:"Só estes 4 exercícios, não é a lista toda. Tema: operadores e fluxogramas. Submeter no Moodle até às 23h59.", tags:["trabalho de casa","Moodle"]},
   {uc:"alg", d:"2026-10-28", t:"1.ª avaliação", k:"Avaliação"},
   {uc:"fbd", d:"2026-11-15", t:"Trabalho prático · M1", k:"Entrega", x:"Modelo E-A + esquema relacional. Grupos de 2.", tags:["35% (TP)","mín. 8,0"]},
   {uc:"mat", d:"2026-11-16", t:"1.ª avaliação", k:"Avaliação"},
@@ -377,7 +378,7 @@ const EVENTS = [
   {uc:"fbd", d:"2027-02-05", s:"19:00", e:"22:00", t:"Teste", k:"Teste", tags:["65%","mín. 8,0"]}
 ];
 // cadeiras ainda sem datas (apagar a linha quando tiverem datas)
-const PENDING = ["fp","fis","ac"];
+const PENDING = ["fis","ac"];
 
 const SEM_START = new Date(2026,8,21), SEM_END = new Date(2027,1,13);
 const MONTHS = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
