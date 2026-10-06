@@ -1,0 +1,16 @@
+{
+  "name": "LEI Pós-laboral · ISLA Gaia",
+  "short_name": "LEI Pós-lab",
+  "description": "Avaliações e biblioteca da turma LEI Pós-laboral",
+  "lang": "pt-PT",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0E1324",
+  "theme_color": "#0E1324",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

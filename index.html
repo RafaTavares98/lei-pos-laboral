@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#F4F6FA">
 <meta name="robots" content="noindex, nofollow">
 <title>LEI Pós-laboral</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LEI Pós-lab">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>try{var t=localStorage.getItem("lei-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,6 +88,9 @@ h1 span{background:linear-gradient(90deg,var(--accent),var(--violet));-webkit-ba
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
 .themebtn{margin-left:auto;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);transition:color .15s,border-color .15s}
+.moodlebtn{width:auto;padding:0 14px;display:inline-flex;gap:7px;align-items:center;text-decoration:none;font-weight:600;font-size:14px;color:var(--ink)}
+.moodlebtn + .themebtn{margin-left:0}
+@media (max-width:560px){.moodlebtn span{display:none}.moodlebtn{padding:0;width:44px;justify-content:center}}
 .themebtn:hover{color:var(--ink);border-color:var(--accent)}
 .themebtn svg{width:19px;height:19px}
 @media (max-width:560px){.tabs{flex:1}.tab{flex:1;justify-content:center;padding:11px 8px}}
@@ -121,6 +131,22 @@ h1 span{background:linear-gradient(90deg,var(--accent),var(--violet));-webkit-ba
 .after .mini i{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
 .after .mini em{font-style:normal;color:var(--muted);font-size:12.5px}
 
+.urg{align-self:flex-start;font-weight:700;font-size:14px;letter-spacing:.04em;color:#fff;background:var(--danger);padding:6px 12px;border-radius:8px}
+.term.soon1 .urg{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+.term.urgent{border-color:color-mix(in srgb,var(--danger) 55%,var(--line))}
+.term.urgent .cd b{color:var(--danger)}
+.cd.nodays{grid-template-columns:repeat(3,1fr)}
+.nextlinks{display:flex;gap:8px;flex-wrap:wrap}
+.nextlinks .btn{padding:10px 14px;text-decoration:none}
+.gcal.moodle{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+
+.install{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);position:relative}
+.install img{width:44px;height:44px;border-radius:11px;flex:none}
+.install-t{display:flex;flex-direction:column;gap:2px;font-size:13.5px;color:var(--muted);flex:1;min-width:0;padding-right:18px}
+.install-t b{color:var(--ink);font-size:14.5px}
+.install .btn{padding:10px 14px}
+.install .news-x{position:absolute;top:8px;right:8px}
+
 /* ---------- semestre ---------- */
 .strip{display:flex;flex-direction:column;gap:10px}
 .strip-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
@@ -142,8 +168,8 @@ h1 span{background:linear-gradient(90deg,var(--accent),var(--violet));-webkit-ba
 .chip:hover{border-color:var(--c,var(--accent))}
 .chip[aria-pressed="true"]{background:var(--c,var(--accent));color:var(--on-accent);border-color:var(--c,var(--accent))}
 .chip[aria-pressed="true"] i{background:var(--on-accent)}
-.chip .short{display:none}
-@media (max-width:640px){.filters{flex-wrap:nowrap;overflow-x:auto;margin-inline:-16px;padding-inline:16px;padding-block:2px 8px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.chip{flex:none}.chip .full{display:none}.chip .short{display:inline}}
+.chip .full{display:none}.chip .short{display:inline}
+@media (max-width:640px){.filters{flex-wrap:nowrap;overflow-x:auto;margin-inline:-16px;padding-inline:16px;padding-block:2px 8px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.chip{flex:none}}
 
 /* ---------- timeline ---------- */
 .tl{position:relative;display:flex;flex-direction:column;gap:12px}
@@ -169,6 +195,7 @@ h1 span{background:linear-gradient(90deg,var(--accent),var(--violet));-webkit-ba
 .tag.k{background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
 .tag.soft{color:var(--muted)}
 .side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.side{flex-wrap:wrap}
 .left{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;padding:5px 9px;border-radius:8px;background:var(--surface-2);white-space:nowrap}
 .left.soon{background:var(--accent-soft);color:var(--accent)}
 .gcal{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);text-decoration:none;padding:4px 8px;border-radius:8px;border:1px solid var(--line);transition:color .15s,border-color .15s}
@@ -184,7 +211,8 @@ h1 span{background:linear-gradient(90deg,var(--accent),var(--violet));-webkit-ba
   .row,.mh{grid-template-columns:48px 20px 1fr;gap:0 6px}
   .date b{font-size:24px}
   .card{grid-template-columns:1fr;padding:13px 14px}
-  .side{flex-direction:row;justify-content:space-between;align-items:center}
+  .side{flex-direction:row;justify-content:flex-start;align-items:center;gap:6px}
+  .side .left{margin-right:auto}
 }
 
 /* ---------- biblioteca ---------- */
@@ -291,8 +319,16 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
       <button class="tab" role="tab" id="tab-aval" aria-controls="view-aval" aria-selected="true" data-v="aval"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3"/></svg>Avaliações</button>
       <button class="tab" role="tab" id="tab-lib" aria-controls="view-lib" aria-selected="false" data-v="lib"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 2.5h3v11h-3zM6.5 2.5h3v11h-3zM10.3 3.2l2.9-.8 2.3 10.6-2.9.8z"/></svg>Biblioteca<span class="tbadge" id="libBadge" hidden></span></button>
     </nav>
+    <a class="themebtn moodlebtn" href="https://moodle.ensinolusofona.pt/my/courses.php" target="_blank" rel="noopener" title="Abrir o Moodle" aria-label="Abrir o Moodle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 13V7.5L8 4l6 3.5V13M5 13V9.5M8 13V9.5M11 13V9.5"/></svg><span>Moodle</span></a>
     <button class="themebtn" id="themeBtn" type="button"></button>
   </div>
+
+  <section class="install" id="install" hidden>
+    <img src="icon-192.png" alt="" width="44" height="44">
+    <div class="install-t"><b>Instala como app</b><span id="installTxt">Abre num toque, a partir do ecrã principal, e o calendário funciona sem rede.</span></div>
+    <button class="btn" type="button" id="installBtn" hidden>Instalar</button>
+    <button class="news-x" type="button" id="installX" aria-label="Fechar">✕</button>
+  </section>
 
   <div class="view" id="view-aval" role="tabpanel" aria-labelledby="tab-aval">
     <section class="news" id="evNews" role="status" hidden></section>
@@ -350,7 +386,7 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
   </div>
 
   <footer>
-    <span><b>$</b> última atualização: 4 out 2026</span>
+    <span><b>$</b> última atualização: <span id="upd">4 out 2026</span></span>
     <span>Data errada, ficheiro em falta ou problema? Fala com a Rafa.</span>
   </footer>
 </div>
@@ -365,8 +401,8 @@ const UC = {
   ac:{s:"Arquitetura", n:"Arquitetura de Computadores", c:"--c-ac"}
 };
 // d: "ano-mês-dia" · s/e: hora início/fim opcional · k: tipo · x: nota · tags: etiquetas
-const EVENTS = [
-  {uc:"fp", d:"2026-10-06", t:"Lista 1 · Exercícios 2, 3, 4 e 5", k:"Entrega", x:"Só estes 4 exercícios, não é a lista toda. Tema: operadores e fluxogramas. Submeter no Moodle até às 23h59.", tags:["trabalho de casa","Moodle"]},
+let EVENTS = [
+  {uc:"fp", d:"2026-10-06", t:"Lista 1 · Exercícios 2, 3, 4 e 5", k:"Entrega", x:"Só estes 4 exercícios, não é a lista toda. Tema: operadores e fluxogramas. Submeter no Moodle até às 23h59.", tags:["trabalho de casa","Moodle"], link:"https://moodle.ensinolusofona.pt/my/courses.php"},
   {uc:"alg", d:"2026-10-28", t:"1.ª avaliação", k:"Avaliação"},
   {uc:"fbd", d:"2026-11-15", t:"Trabalho prático · M1", k:"Entrega", x:"Modelo E-A + esquema relacional. Grupos de 2.", tags:["35% (TP)","mín. 8,0"]},
   {uc:"mat", d:"2026-11-16", t:"1.ª avaliação", k:"Avaliação"},
@@ -377,8 +413,11 @@ const EVENTS = [
   {uc:"mat", d:"2027-01-25", t:"2.ª avaliação", k:"Avaliação"},
   {uc:"fbd", d:"2027-02-05", s:"19:00", e:"22:00", t:"Teste", k:"Teste", tags:["65%","mín. 8,0"]}
 ];
-// cadeiras ainda sem datas (apagar a linha quando tiverem datas)
-const PENDING = ["fis","ac"];
+// cadeiras sem datas: calculado sozinho
+let PENDING = [];
+// última versão do calendário guardada neste dispositivo (vinda da folha)
+try{ const c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c && Array.isArray(c.eventos)) EVENTS = c.eventos; }catch(e){}
+PENDING = Object.keys(UC).filter(k=>!EVENTS.some(e=>e.uc===k));
 
 const SEM_START = new Date(2026,8,21), SEM_END = new Date(2027,1,13);
 const MONTHS = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -453,7 +492,8 @@ function renderTrack(){
   document.getElementById("track").innerHTML = h;
   document.getElementById("months").innerHTML = mh;
   const left = EVENTS.filter(e=>diff(parse(e.d))>=0).length;
-  document.getElementById("progress").innerHTML = `<b>${Math.round(tp)}%</b> feito · ${left} por fazer`;
+  const wk = Math.min(Math.max(1, Math.floor((today - SEM_START)/6048e5) + 1), Math.ceil((SEM_END - SEM_START)/6048e5)), wkT = Math.ceil((SEM_END - SEM_START)/6048e5);
+  document.getElementById("progress").innerHTML = `Semana <b>${wk}</b> de ${wkT} · <b>${left}</b> ${left===1?"avaliação":"avaliações"} por fazer`;
 }
 
 function renderFilters(){
@@ -486,7 +526,7 @@ function renderList(){
         </div>
         <div class="side">
           <span class="left${soon?" soon":""}">${leftTxt(n)}</span>
-          ${past?"":`<a class="gcal" href="${gcal(e)}" target="_blank" rel="noopener">${CAL_ICON}Calendário</a>`}
+          ${!past && e.link ? `<a class="gcal moodle" href="${e.link}" target="_blank" rel="noopener">${linkIcon()}Moodle</a>` : ""}${past?"":`<a class="gcal" href="${gcal(e)}" target="_blank" rel="noopener">${CAL_ICON}Calendário</a>`}
         </div>
       </article>
     </div>`;
@@ -514,15 +554,15 @@ renderAll();
 /* ================= novidades desde a última visita ================= */
 var NEW_EV; // sem valor inicial: o calendário (mais acima) já pode tê-lo preenchido
 function evKey(e){ return [e.uc, e.d, e.s||"", e.t].join("|"); }
+var SEEN_PREV; // o que esta pessoa já tinha visto antes desta visita (lido uma vez)
 function initSeen(){
+  if(SEEN_PREV === undefined){ try{ SEEN_PREV = JSON.parse(localStorage.getItem("lei-seen-ev") || "null"); }catch(e){ SEEN_PREV = null; } }
   NEW_EV = new Set();
-  var keys = EVENTS.map(evKey), seen = null;
-  try{ seen = JSON.parse(localStorage.getItem("lei-seen-ev") || "null"); }catch(e){}
-  if(Array.isArray(seen)){
-    EVENTS.forEach(function(e){ var k = evKey(e); if(seen.indexOf(k) === -1 && target(e) > new Date()) NEW_EV.add(k); });
+  if(Array.isArray(SEEN_PREV)){
+    EVENTS.forEach(function(e){ var k = evKey(e); if(SEEN_PREV.indexOf(k) === -1 && target(e) > new Date()) NEW_EV.add(k); });
   }
   // a partir de agora estas datas contam como vistas (as marcas ficam até fechar a página)
-  try{ localStorage.setItem("lei-seen-ev", JSON.stringify(keys)); }catch(e){}
+  try{ localStorage.setItem("lei-seen-ev", JSON.stringify(EVENTS.map(evKey))); }catch(e){}
 }
 function isNew(e){ if(!NEW_EV) initSeen(); return NEW_EV.has(evKey(e)); }
 function renderNews(){
@@ -537,6 +577,34 @@ function renderNews(){
   box.querySelector(".news-x").onclick = function(){ box.hidden = true; };
 }
 renderNews();
+
+/* ================= próxima avaliação: urgência + Moodle ================= */
+function linkIcon(){ return '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 2.5h4.5V7M13.5 2.5 7 9M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3"/></svg>'; } // função: já existe quando o calendário é desenhado
+function enhanceNext(){
+  var now = new Date();
+  var up = EVENTS.filter(function(e){ return target(e) > now; }).sort(function(a,b){ return target(a)-target(b); });
+  var box = document.getElementById("next"); if(!up.length || !box) return;
+  var e = up[0], n = diff(parse(e.d));
+  var term = box.closest(".term");
+  term.classList.toggle("urgent", n === 0); term.classList.toggle("soon1", n === 1);
+  var old = box.querySelector(".urg"); if(old) old.remove();
+  if(n <= 1){
+    var hora = e.s ? "às " + e.s.replace(":","h") : (e.k === "Entrega" ? "até às 23h59" : "às 19h00");
+    var u = document.createElement("div"); u.className = "urg";
+    u.textContent = (n === 0 ? "HOJE" : "AMANHÃ") + " · " + hora;
+    box.querySelector(".next-uc").after(u);
+  }
+  // sem dias para contar: mostra só horas, min e seg
+  var dBox = document.getElementById("cd-d"); if(dBox){ dBox.parentNode.hidden = (n === 0); box.querySelector(".cd").classList.toggle("nodays", n === 0); }
+  var oldL = box.querySelector(".nextlinks"); if(oldL) oldL.remove();
+  if(e.link){
+    var l = document.createElement("div"); l.className = "nextlinks";
+    l.innerHTML = '<a class="btn" href="' + e.link + '" target="_blank" rel="noopener">' + linkIcon() + 'Abrir no Moodle</a>';
+    box.querySelector(".cd").before(l);
+  }
+}
+renderNext = (function(orig){ return function(){ orig(); enhanceNext(); }; })(renderNext);
+enhanceNext();
 
 /* ================= tema claro / escuro ================= */
 const Theme = (()=>{
@@ -835,6 +903,71 @@ setTimeout(Lib.prefetch, 300);
   draw();
   let t; addEventListener("resize", ()=>{ clearTimeout(t); t = setTimeout(draw, 200); });
   document.addEventListener("themechange", draw);
+})();
+
+
+/* ================= app instalável (PWA) ================= */
+(function(){
+  if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+    addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  }
+  var box = document.getElementById("install"), btn = document.getElementById("installBtn"), txt = document.getElementById("installTxt");
+  var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  var closed = false; try{ closed = localStorage.getItem("lei-install-x") === "1"; }catch(e){}
+  if(standalone || closed) return;
+  var ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var mobile = ios || /Android/.test(ua);
+  var deferred = null;
+  addEventListener("beforeinstallprompt", function(e){
+    e.preventDefault(); deferred = e;
+    if(!mobile) return;               // no computador não insistimos
+    txt.textContent = "Abre num toque, a partir do ecrã principal, e o calendário funciona sem rede.";
+    btn.hidden = false; box.hidden = false;
+  });
+  btn.addEventListener("click", function(){
+    if(!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.finally(function(){ deferred = null; box.hidden = true; });
+  });
+  document.getElementById("installX").addEventListener("click", function(){
+    box.hidden = true; try{ localStorage.setItem("lei-install-x", "1"); }catch(e){}
+  });
+  addEventListener("appinstalled", function(){ box.hidden = true; });
+  var SHARE = '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" style="vertical-align:-2px" aria-hidden="true"><path d="M8 10V2M5 4.5 8 1.5l3 3M4 7H3v7h10V7h-1"/></svg>';
+  if(ios){
+    // iOS 16.4+: Safari, Chrome, Edge e Firefox conseguem adicionar ao ecrã principal pelo botão Partilhar
+    txt.innerHTML = 'Toca em <b>Partilhar</b> ' + SHARE + ' (em baixo no Safari, ao lado do endereço no Chrome) e depois em <b>Adicionar ao ecrã principal</b>.';
+    box.hidden = false;
+  } else if(mobile){
+    // Android: Chrome, Edge e Samsung Internet mostram o botão "Instalar"; os outros (ex.: Firefox) instalam pelo menu
+    setTimeout(function(){
+      if(deferred || closed) return;
+      txt.innerHTML = 'Abre o menu <b>⋮</b> do browser e escolhe <b>Instalar app</b> ou <b>Adicionar ao ecrã principal</b>.';
+      box.hidden = false;
+    }, 2500);
+  }
+})();
+
+
+/* ================= calendário a partir da folha do Drive ================= */
+function setUpd(iso){
+  var el = document.getElementById("upd"); if(!el || !iso) return;
+  var d = new Date(iso); if(isNaN(d)) return;
+  el.textContent = d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + " às " + pad(d.getHours()) + "h" + pad(d.getMinutes());
+}
+(function(){
+  try{ var c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c) setUpd(c.atualizado); }catch(e){}
+  if(!API_URL) return;
+  fetch(API_URL + "?acao=calendario").then(function(r){ return r.json(); }).then(function(j){
+    if(!j || !j.ok || !Array.isArray(j.eventos)) return;
+    try{ localStorage.setItem("lei-cal", JSON.stringify({ eventos: j.eventos, atualizado: j.atualizado })); }catch(e){}
+    setUpd(j.atualizado);
+    if(JSON.stringify(j.eventos) === JSON.stringify(EVENTS)) return;
+    EVENTS = j.eventos;
+    PENDING = Object.keys(UC).filter(function(k){ return !EVENTS.some(function(e){ return e.uc === k; }); });
+    NEW_EV = null;
+    renderAll(); renderNews();
+  }).catch(function(){ /* sem rede ou Google em baixo: fica a versão guardada */ });
 })();
 </script>
 
