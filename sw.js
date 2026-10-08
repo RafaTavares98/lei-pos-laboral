@@ -2,7 +2,9 @@
    - página: vai sempre primeiro à rede (atualizações chegam logo); sem rede, usa a cópia guardada
    - ícones e letras: guardados na primeira visita
    - Biblioteca (Google Apps Script) e Moodle: nunca passam por aqui */
-const CACHE = "lei-v1";
+// notificações (OneSignal): o mesmo service worker trata das notificações e do modo sem rede
+try { importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js"); } catch (e) {}
+const CACHE = "lei-v2";
 const BASE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {

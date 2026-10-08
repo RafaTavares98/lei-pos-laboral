@@ -141,6 +141,7 @@ h1 span{background:linear-gradient(90deg,var(--accent),var(--violet));-webkit-ba
 .gcal.moodle{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
 
 .install{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);position:relative}
+.install .bell{width:44px;height:44px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:22px;background:var(--accent-soft)}
 .install img{width:44px;height:44px;border-radius:11px;flex:none}
 .install-t{display:flex;flex-direction:column;gap:2px;font-size:13.5px;color:var(--muted);flex:1;min-width:0;padding-right:18px}
 .install-t b{color:var(--ink);font-size:14.5px}
@@ -330,6 +331,13 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
     <button class="news-x" type="button" id="installX" aria-label="Fechar">✕</button>
   </section>
 
+  <section class="install" id="pushCard" hidden>
+    <span class="bell" aria-hidden="true">🔔</span>
+    <div class="install-t"><b>Recebe avisos no telemóvel</b><span id="pushTxt">Novas datas, datas alteradas e lembretes no dia e na véspera.</span></div>
+    <button class="btn" type="button" id="pushBtn">Ativar</button>
+    <button class="news-x" type="button" id="pushX" aria-label="Fechar">✕</button>
+  </section>
+
   <div class="view" id="view-aval" role="tabpanel" aria-labelledby="tab-aval">
     <section class="news" id="evNews" role="status" hidden></section>
     <section class="term" aria-live="polite">
@@ -386,7 +394,8 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
   </div>
 
   <footer>
-    <span><b>$</b> última atualização: <span id="upd">4 out 2026</span></span>
+    <span><b>$</b> última atualização: <span id="upd">8 out 2026</span></span>
+    <span><button type="button" class="linkbtn" id="pushFoot" hidden></button></span>
     <span>Data errada, ficheiro em falta ou problema? Fala com a Rafa.</span>
   </footer>
 </div>
@@ -416,7 +425,11 @@ let EVENTS = [
 // cadeiras sem datas: calculado sozinho
 let PENDING = [];
 // última versão do calendário guardada neste dispositivo (vinda da folha)
-try{ const c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c && Array.isArray(c.eventos)) EVENTS = c.eventos; }catch(e){}
+// datas escritas aqui (GitHub) + datas da folha do Drive: juntam-se, sem repetir
+const EMBED = EVENTS.slice();
+function mergeEv(a, b){ const m = new Map(); a.concat(b).forEach(e=>m.set([e.uc,e.d,e.t].join("|"), e)); return Array.from(m.values()).sort((x,y)=>(x.d+(x.s||"")).localeCompare(y.d+(y.s||""))); }
+EVENTS = mergeEv(EMBED, []);
+try{ const c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c && Array.isArray(c.eventos)) EVENTS = mergeEv(EMBED, c.eventos); }catch(e){}
 PENDING = Object.keys(UC).filter(k=>!EVENTS.some(e=>e.uc===k));
 
 const SEM_START = new Date(2026,8,21), SEM_END = new Date(2027,1,13);
@@ -962,12 +975,71 @@ function setUpd(iso){
     if(!j || !j.ok || !Array.isArray(j.eventos)) return;
     try{ localStorage.setItem("lei-cal", JSON.stringify({ eventos: j.eventos, atualizado: j.atualizado })); }catch(e){}
     setUpd(j.atualizado);
-    if(JSON.stringify(j.eventos) === JSON.stringify(EVENTS)) return;
-    EVENTS = j.eventos;
+    var juntos = mergeEv(EMBED, j.eventos);
+    if(JSON.stringify(juntos) === JSON.stringify(EVENTS)) return;
+    EVENTS = juntos;
     PENDING = Object.keys(UC).filter(function(k){ return !EVENTS.some(function(e){ return e.uc === k; }); });
     NEW_EV = null;
     renderAll(); renderNews();
   }).catch(function(){ /* sem rede ou Google em baixo: fica a versão guardada */ });
+})();
+
+
+/* ================= notificações (OneSignal) ================= */
+// App ID do OneSignal (é público). Vazio = notificações desligadas.
+const ONESIGNAL_APP_ID = "ba347ac4-d19b-4449-8dad-20b7c366024b";
+(function(){
+  if(!ONESIGNAL_APP_ID) return;
+  var card = document.getElementById("pushCard"), btn = document.getElementById("pushBtn"),
+      txt = document.getElementById("pushTxt"), foot = document.getElementById("pushFoot");
+  var ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  var closed = false; try{ closed = localStorage.getItem("lei-push-x") === "1"; }catch(e){}
+
+  // iPhone: a Apple só permite notificações depois de instalar a app no ecrã principal
+  if(ios && !standalone){
+    if(!closed){ txt.innerHTML = "No iPhone, primeiro <b>instala a app</b> (Partilhar → Adicionar ao ecrã principal). Depois abre-a e ativa os avisos aqui."; btn.hidden = true; card.hidden = false; }
+    document.getElementById("pushX").onclick = function(){ card.hidden = true; try{ localStorage.setItem("lei-push-x","1"); }catch(e){} };
+    return;
+  }
+
+  var s = document.createElement("script");
+  s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"; s.defer = true;
+  document.head.appendChild(s);
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal){
+    var base = location.pathname.replace(/[^/]*$/, ""); // ex.: /lei-pos-laboral/
+    await OneSignal.init({
+      appId: ONESIGNAL_APP_ID,
+      serviceWorkerPath: base.replace(/^\//, "") + "sw.js",
+      serviceWorkerParam: { scope: base },
+      allowLocalhostAsSecureOrigin: true
+    });
+    if(!OneSignal.Notifications.isPushSupported()) return;
+    function estado(){
+      var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
+      card.hidden = on || closed;
+      foot.hidden = false;
+      foot.textContent = on ? "🔔 Avisos ativos · desativar" : "🔕 Ativar avisos";
+    }
+    async function ativar(){
+      btn.disabled = true;
+      try{
+        if(!OneSignal.Notifications.permission) await OneSignal.Notifications.requestPermission();
+        if(OneSignal.Notifications.permission) await OneSignal.User.PushSubscription.optIn();
+        else txt.textContent = "O browser bloqueou os avisos. Ativa-os nas definições do site (cadeado ao lado do endereço).";
+      }finally{ btn.disabled = false; estado(); }
+    }
+    btn.onclick = ativar;
+    document.getElementById("pushX").onclick = function(){ closed = true; card.hidden = true; try{ localStorage.setItem("lei-push-x","1"); }catch(e){} };
+    foot.onclick = async function(){
+      if(OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn){ await OneSignal.User.PushSubscription.optOut(); estado(); }
+      else { closed = false; await ativar(); }
+    };
+    OneSignal.User.PushSubscription.addEventListener("change", estado);
+    OneSignal.Notifications.addEventListener("permissionChange", estado);
+    estado();
+  });
 })();
 </script>
 
