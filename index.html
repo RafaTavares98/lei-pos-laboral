@@ -15,7 +15,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>try{var t=localStorage.getItem("lei-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <script>(function(){var q=new URLSearchParams(location.search).get("estacao");var d=new Date(),k=(d.getMonth()+1)*100+d.getDate();
-var e=(k>=923&&k<=1220)?"outono":(k>=1221||k<=320)?"inverno":"";if(q==="outono"||q==="inverno")e=q;if(q==="normal")e="";
+var e=(k>=321&&k<=620)?"primavera":(k>=621&&k<=922)?"verao":(k>=923&&k<=1220)?"outono":"inverno";
+if(["primavera","verao","outono","inverno"].indexOf(q)>=0)e=q;if(q==="normal")e="";
 if(e)document.documentElement.dataset.season=e;})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,8 +60,24 @@ if(e)document.documentElement.dataset.season=e;})();</script>
 }
 :root[data-season="outono"][data-theme="dark"]{--title-a:#F0A35C;--title-b:#E06A45;--season-ink:#F0A35C;--season-soft:rgba(240,163,92,.14)}
 :root[data-season="inverno"][data-theme="dark"]{--title-a:#9CC4F5;--title-b:#B3A6F5;--season-ink:#AFCDF5;--season-soft:rgba(156,196,245,.14)}
+:root[data-season="primavera"]{--title-a:#2E9A5B;--title-b:#D2558C;--season-ink:#2A8A52;--season-soft:rgba(46,154,91,.12)}
+:root[data-season="verao"]{--title-a:#D98A12;--title-b:#E0563A;--season-ink:#B7720C;--season-soft:rgba(232,165,40,.15)}
+@media (prefers-color-scheme:dark){
+  :root[data-season="primavera"]:not([data-theme="light"]){--title-a:#7BD69C;--title-b:#F29BC0;--season-ink:#8EDBA9;--season-soft:rgba(123,214,156,.14)}
+  :root[data-season="verao"]:not([data-theme="light"]){--title-a:#F5C25A;--title-b:#F28A6A;--season-ink:#F5C25A;--season-soft:rgba(245,194,90,.14)}
+}
+:root[data-season="primavera"][data-theme="dark"]{--title-a:#7BD69C;--title-b:#F29BC0;--season-ink:#8EDBA9;--season-soft:rgba(123,214,156,.14)}
+:root[data-season="verao"][data-theme="dark"]{--title-a:#F5C25A;--title-b:#F28A6A;--season-ink:#F5C25A;--season-soft:rgba(245,194,90,.14)}
 .season-pill{color:var(--season-ink);background:var(--season-soft);border-color:transparent;font-weight:600}
 /* brilhos do fundo por estação */
+:root[data-season="primavera"]{--bg:#F4F8F3;--bg-glow1:rgba(232,120,170,.12);--bg-glow2:rgba(70,170,110,.10)}
+:root[data-season="verao"]{--bg:#F8F6EF;--bg-glow1:rgba(245,175,40,.18);--bg-glow2:rgba(40,170,190,.10)}
+@media (prefers-color-scheme:dark){
+  :root[data-season="primavera"]:not([data-theme="light"]){--bg:#101A18;--bg-glow1:rgba(240,140,190,.13);--bg-glow2:rgba(100,200,140,.08)}
+  :root[data-season="verao"]:not([data-theme="light"]){--bg:#13151F;--bg-glow1:rgba(245,180,70,.16);--bg-glow2:rgba(60,190,210,.08)}
+}
+:root[data-season="primavera"][data-theme="dark"]{--bg:#101A18;--bg-glow1:rgba(240,140,190,.13);--bg-glow2:rgba(100,200,140,.08)}
+:root[data-season="verao"][data-theme="dark"]{--bg:#13151F;--bg-glow1:rgba(245,180,70,.16);--bg-glow2:rgba(60,190,210,.08)}
 :root[data-season="outono"]{--bg:#F7F3EE;--bg-glow1:rgba(214,110,40,.13);--bg-glow2:rgba(176,72,40,.09)}
 :root[data-season="inverno"]{--bg:#F2F5FA;--bg-glow1:rgba(110,150,220,.14);--bg-glow2:rgba(150,190,230,.12)}
 @media (prefers-color-scheme:dark){
@@ -752,7 +769,7 @@ const Lib = (()=>{
     $("gateForm").addEventListener("submit", async ev=>{
       ev.preventDefault();
       const btn = $("gateForm").querySelector("button"), m = $("gateMsg");
-      code = $("codeIn").value.trim(); if(!code) return;
+      code = $("codeIn").value.replace(/\s+/g, "").toUpperCase(); if(!code) return; // o campo mostra maiúsculas: envia também em maiúsculas
       btn.disabled = true; m.className = "msg"; m.innerHTML = '<span class="spin"></span> a verificar…';
       try{
         m.innerHTML = '<span class="spin"></span> a abrir a biblioteca…';
@@ -925,7 +942,8 @@ setTimeout(Lib.prefetch, 300);
 (function(){
   const est = document.documentElement.dataset.season || "";
   const pill = document.getElementById("seasonPill");
-  if(pill && est){ pill.textContent = est === "outono" ? "🍂 Outono" : "❄️ Inverno"; pill.hidden = false; }
+  const NOMES = { primavera: "🌸 Primavera", verao: "☀️ Verão", outono: "🍂 Outono", inverno: "❄️ Inverno" };
+  if(pill && NOMES[est]){ pill.textContent = NOMES[est]; pill.hidden = false; }
 
   const c = document.getElementById("sky"), x = c.getContext("2d");
   function rng(seed){ return function(){ seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
@@ -959,6 +977,28 @@ setTimeout(Lib.prefetch, 300);
     }
     x.restore();
   }
+  // flor de 5 pétalas (primavera)
+  function flor(px, py, s, ang, cor, miolo){
+    x.save(); x.translate(px, py); x.rotate(ang); x.fillStyle = cor;
+    for(let k = 0; k < 5; k++){
+      x.rotate(Math.PI * 2 / 5); x.beginPath();
+      x.ellipse(0, -s * .55, s * .34, s * .55, 0, 0, 6.283); x.fill();
+    }
+    x.fillStyle = miolo; x.beginPath(); x.arc(0, 0, s * .22, 0, 6.283); x.fill();
+    x.restore();
+  }
+  // pétala solta
+  function petala(px, py, s, ang, cor){
+    x.save(); x.translate(px, py); x.rotate(ang); x.fillStyle = cor; x.beginPath();
+    x.moveTo(0, -s); x.bezierCurveTo(s * .7, -s * .4, s * .45, s * .7, 0, s * .55);
+    x.bezierCurveTo(-s * .45, s * .7, -s * .7, -s * .4, 0, -s); x.fill(); x.restore();
+  }
+  // brilho em estrela de 4 pontas (verão)
+  function brilho(px, py, s, cor){
+    x.save(); x.translate(px, py); x.fillStyle = cor; x.beginPath();
+    x.moveTo(0, -s); x.quadraticCurveTo(0, 0, s, 0); x.quadraticCurveTo(0, 0, 0, s);
+    x.quadraticCurveTo(0, 0, -s, 0); x.quadraticCurveTo(0, 0, 0, -s); x.fill(); x.restore();
+  }
   // composição: cachos nos cantos de cima + umas soltas pelas margens
   function pontos(R, W, H, nCanto, nSoltas){
     const out = [], raio = Math.min(W * .32, 260);
@@ -988,6 +1028,49 @@ setTimeout(Lib.prefetch, 300);
       }
     }
     const pc = W > 900;
+    if(est === "primavera"){
+      const R = rng(321);
+      const flores = dark ? ["#F4A9C8", "#F7C6DA", "#E98BB4", "#FFFFFF"] : ["#EC8DB5", "#F4B3CD", "#D9679A", "#F7D3E2"];
+      const miolo = dark ? "#F5D06B" : "#E9B83C";
+      pontos(R, W, H, pc ? 14 : 9, pc ? 16 : 4).forEach(([px, py, perto]) => {
+        x.globalAlpha = (dark ? .22 : .28) + perto * .32 + R() * .08;
+        const cor = flores[Math.floor(R() * flores.length)], s = (pc ? 7 : 6) + R() * (pc ? 8 : 5) + perto * 4;
+        if(R() < .55) flor(px, py, s, R() * 6.283, cor, miolo); else petala(px, py, s * .7, R() * 6.283, cor);
+      });
+      // folhinhas verdes nos cantos
+      const R2 = rng(3210), verde = dark ? "#6CC28C" : "#4FA36E";
+      pontos(R2, W, H, pc ? 6 : 4, 0).forEach(([px, py, perto]) => {
+        x.globalAlpha = (dark ? .2 : .25) + perto * .2; oval(px, py, (pc ? 7 : 5) + R2() * 5, R2() * 6.283, verde);
+      });
+      x.globalAlpha = 1;
+    }
+    if(est === "verao"){
+      // sol no canto de cima à direita: raios suaves
+      const sx = W - (pc ? 60 : 30), sy = pc ? 40 : 20, raio = pc ? 230 : 140;
+      const g = x.createRadialGradient(sx, sy, 0, sx, sy, raio);
+      g.addColorStop(0, dark ? "rgba(255,200,90,.22)" : "rgba(255,190,60,.35)"); g.addColorStop(1, "rgba(255,190,60,0)");
+      x.fillStyle = g; x.beginPath(); x.arc(sx, sy, raio, 0, 6.283); x.fill();
+      x.save(); x.translate(sx, sy); x.strokeStyle = dark ? "rgba(255,205,110,.18)" : "rgba(232,160,30,.28)"; x.lineCap = "round";
+      for(let k = 0; k < 14; k++){ x.rotate(Math.PI * 2 / 14); x.lineWidth = k % 2 ? 2 : 3.5;
+        x.beginPath(); x.moveTo(0, raio * .32); x.lineTo(0, raio * (k % 2 ? .62 : .78)); x.stroke(); }
+      x.restore();
+      x.fillStyle = dark ? "rgba(255,210,120,.35)" : "rgba(245,175,40,.45)"; x.beginPath(); x.arc(sx, sy, raio * .2, 0, 6.283); x.fill();
+      // brilhos espalhados (dourado e água)
+      const R = rng(621), cores = dark ? ["#F5C25A", "#7FD3E0", "#FFE3A3"] : ["#E8A528", "#2AA9BE", "#F2C14E"];
+      pontos(R, W, H, pc ? 8 : 5, pc ? 18 : 5).forEach(([px, py, perto]) => {
+        if(px > W - raio * .8 && py < raio * .8) return;     // não por cima do sol
+        x.globalAlpha = (dark ? .25 : .3) + perto * .25 + R() * .1;
+        x.fillStyle = cores[Math.floor(R() * cores.length)];
+        if(R() < .5) brilho(px, py, 4 + R() * 6, x.fillStyle); else { x.beginPath(); x.arc(px, py, 1.3 + R() * 1.8, 0, 6.283); x.fill(); }
+      });
+      // ondas suaves no fundo do ecrã
+      x.globalAlpha = 1;
+      [[22, dark ? "rgba(90,200,220,.06)" : "rgba(40,170,190,.10)"], [10, dark ? "rgba(90,200,220,.09)" : "rgba(40,170,190,.14)"]].forEach(([alt, cor], j) => {
+        x.fillStyle = cor; x.beginPath(); x.moveTo(0, H);
+        for(let px = 0; px <= W; px += 20) x.lineTo(px, H - alt - Math.sin(px / 60 + j) * 6);
+        x.lineTo(W, H); x.closePath(); x.fill();
+      });
+    }
     if(est === "outono"){
       const R = rng(1923);
       const cores = dark ? ["#E9874A", "#D2603A", "#E8AE57", "#B8503A", "#C9873E"] : ["#D9692B", "#C04A2C", "#DA9B3C", "#A63C26", "#C27B2F"];
