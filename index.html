@@ -870,6 +870,26 @@ const Lib = (()=>{
   const size = b => b<1024?`${b} B`:b<1048576?`${Math.round(b/1024)} KB`:`${(b/1048576).toFixed(1).replace(".",",")} MB`;
   const dstr = iso => { const d=new Date(iso); return `${d.getDate()} ${MON[d.getMonth()]}`; };
   const plural = (n,s,p) => `${n} ${n===1?s:p}`;
+  // pastas que existem no Drive (inclui as criadas à mão, ex.: Formulários)
+  let PASTAS = [];
+  try{ const c = JSON.parse(localStorage.getItem("lei-lib-pastas") || "null"); if(Array.isArray(c)) PASTAS = c; }catch(e){}
+  const tName = (t, f) => TIPOS[t] || (f && f.tn) || ((PASTAS.find(p=>p.tipo===t) || (files||[]).find(x=>x.tipo===t) || {}).tn) || "Outros";
+  // ordem: tipos normais primeiro, depois as pastas criadas no Drive (por nome)
+  function tiposDe(uc, fs){
+    const extra = new Set(PASTAS.filter(p=>p.uc===uc && !TIPOS[p.tipo]).map(p=>p.tipo));
+    fs.forEach(f=>{ if(!TIPOS[f.tipo]) extra.add(f.tipo); });
+    return Object.keys(TIPOS).filter(t=>fs.some(f=>f.tipo===t)).concat([...extra].sort((a,b)=>tName(a).localeCompare(tName(b),"pt")));
+  }
+  function fillTipos(){
+    const uc = $("upUc").value, cur = $("upTipo").value;
+    const ex = PASTAS.filter(p=>p.uc===uc && !TIPOS[p.tipo]).sort((a,b)=>a.tn.localeCompare(b.tn,"pt"));
+    // só as pastas que existem nesta cadeira (respeita as que apagaste no Drive)
+    const tem = new Set(PASTAS.filter(p=>p.uc===uc).map(p=>p.tipo));
+    const base = Object.keys(TIPOS).filter(k=>!tem.size || tem.has(k));
+    $("upTipo").innerHTML = `<option value="">Escolhe…</option>` + base.map(k=>`<option value="${k}">${TIPOS[k]}</option>`).join("") +
+      ex.map(p=>`<option value="${esc(p.tipo)}">${esc(p.tn)}</option>`).join("");
+    if([...$("upTipo").options].some(o=>o.value===cur)) $("upTipo").value = cur;
+  }
 
   // ficheiros novos: o que entrou desde a última vez que esta pessoa abriu a biblioteca
   let libSeen = null, libPrev = null;
@@ -917,7 +937,7 @@ const Lib = (()=>{
 
   function setup(){
     $("upUc").innerHTML = `<option value="">Escolhe…</option>` + Object.keys(LUC).map(k=>`<option value="${k}">${LUC[k].n}</option>`).join("");
-    $("upTipo").innerHTML = `<option value="">Escolhe…</option>` + Object.keys(TIPOS).map(k=>`<option value="${k}">${TIPOS[k]}</option>`).join("");
+    fillTipos(); $("upUc").addEventListener("change", fillTipos);
 
     $("gateForm").addEventListener("submit", async ev=>{
       ev.preventDefault();
@@ -928,7 +948,7 @@ const Lib = (()=>{
         m.innerHTML = '<span class="spin"></span> a abrir a biblioteca…';
         const r = await api({ acao:"listar" });
         try{ localStorage.setItem("lei-lib-code", code); }catch(e){}
-        setFiles(r.ficheiros || []);
+        setFiles(r.ficheiros || [], r.pastas);
         m.textContent = ""; $("gate").hidden = true; $("lib").hidden = false; render();
       }catch(e){ m.textContent = e.message==="codigo" ? "Código errado." : e.message; m.className = "msg err"; }
       btn.disabled = false;
@@ -937,7 +957,7 @@ const Lib = (()=>{
     $("upToggle").addEventListener("click", ()=>{
       const p = $("upPanel"), show = p.hidden; p.hidden = !show;
       $("upToggle").setAttribute("aria-expanded", String(show));
-      if(show){ if(view!=="home") $("upUc").value = view; p.scrollIntoView({ behavior:"smooth", block:"nearest" }); }
+      if(show){ if(view!=="home") $("upUc").value = view; fillTipos(); p.scrollIntoView({ behavior:"smooth", block:"nearest" }); }
     });
     $("upClose").addEventListener("click", ()=>{ $("upPanel").hidden = true; $("upToggle").setAttribute("aria-expanded","false"); });
     $("upPor").value = nome;
@@ -994,8 +1014,9 @@ const Lib = (()=>{
     if(ok){ view = uc; pending = null; load(); }
   }
 
-  function setFiles(f){
+  function setFiles(f, pastas){
     files = f;
+    if(Array.isArray(pastas)){ PASTAS = pastas; try{ localStorage.setItem("lei-lib-pastas", JSON.stringify(pastas)); }catch(e){} if(started) fillTipos(); }
     if(!libSeen){ libSeen = new Date().toISOString(); try{ localStorage.setItem("lei-lib-seen", libSeen); }catch(e){} }
     if(!$("view-lib").hidden) markSeen(); else badge();
     try{ localStorage.setItem("lei-lib-cache", JSON.stringify(f)); }catch(e){}
@@ -1007,8 +1028,8 @@ const Lib = (()=>{
     if(!files) $("libList").innerHTML = `<p class="libempty"><span class="spin"></span> a carregar a biblioteca…</p>`;
     pending = api({ acao:"listar" }).then(r=>{
       const novo = r.ficheiros || [];
-      const mudou = JSON.stringify(novo) !== JSON.stringify(files);
-      setFiles(novo);
+      const mudou = JSON.stringify(novo) !== JSON.stringify(files) || JSON.stringify(r.pastas || PASTAS) !== JSON.stringify(PASTAS);
+      setFiles(novo, r.pastas);
       if(mudou) render();
     }).catch(e=>{
       if(e.message!=="codigo" && !files) $("libList").innerHTML = `<p class="libempty">${esc(e.message)}<br><br><button class="btn ghost" type="button" onclick="Lib.load()">Tentar de novo</button></p>`;
@@ -1024,7 +1045,7 @@ const Lib = (()=>{
     const ext = (f.nome.includes(".") ? f.nome.split(".").pop() : "doc").slice(0,4);
     const d = new Date(f.data), quando = `${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()!==new Date().getFullYear()?d.getFullYear()+" ":""}às ${pad(d.getHours())}h${pad(d.getMinutes())}`;
     const quem = `Enviado ${f.por ? "por " + f.por + " " : ""}a ${quando}`;
-    const meta = [showUc ? LUC[f.uc].s : null, showUc ? TIPOS[f.tipo] : null, size(f.tam)].filter(Boolean).join(" · ");
+    const meta = [showUc ? LUC[f.uc].s : null, showUc ? tName(f.tipo, f) : null, size(f.tam)].filter(Boolean).join(" · ");
     return `<button class="frow" type="button" data-id="${esc(f.id)}" style="--c:${lc(f.uc)}" aria-label="Descarregar ${esc(f.nome)}">
       <span class="ext">${esc(ext)}</span>
       <span class="fmeta"><span class="fname">${isNewF(f) ? '<span class="newtag">novo</span>' : ""}${esc(f.nome)}</span><span class="fsub">${esc(quem)}</span><span class="fsub">${esc(meta)}</span></span>
@@ -1055,7 +1076,7 @@ const Lib = (()=>{
     }
 
     const fs = files.filter(f=>f.uc===view);
-    const tipos = Object.keys(TIPOS).filter(t=>fs.some(f=>f.tipo===t));
+    const tipos = tiposDe(view, fs);
     const openT = tipos.includes("testes") ? "testes" : tipos[0];
     list.innerHTML = `<div class="uchead" style="--c:${lc(view)}">
         <button class="back" type="button">${BACK}Cadeiras</button>
@@ -1064,7 +1085,7 @@ const Lib = (()=>{
       (tipos.length ? tipos.map(t=>{
         const ft = fs.filter(f=>f.tipo===t);
         const nn = ft.filter(isNewF).length;
-        return `<details class="sec"${t===openT||nn?" open":""}><summary>${TIPOS[t]} <em>${ft.length}</em>${nn ? `<span class="newtag">${nn} ${nn===1?"novo":"novos"}</span>` : ""}</summary><div class="flist">${ft.map(f=>frow(f,false)).join("")}</div></details>`;
+        return `<details class="sec"${t===openT||nn?" open":""}><summary>${esc(tName(t, ft[0]))} <em>${ft.length}</em>${nn ? `<span class="newtag">${nn} ${nn===1?"novo":"novos"}</span>` : ""}</summary><div class="flist">${ft.length ? ft.map(f=>frow(f,false)).join("") : `<p class="libempty">Pasta vazia por agora.</p>`}</div></details>`;
       }).join("") : `<p class="libempty">Ainda não há ficheiros de ${esc(LUC[view].s)}. Tens algum? Usa “Adicionar”.</p>`);
   }
 
