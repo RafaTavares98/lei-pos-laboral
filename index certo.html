@@ -489,6 +489,15 @@ body.ag-fit .ag-ucs{overflow:auto}
 body.ag-fit .ag-h{margin-bottom:10px}
 body.ag-fit .ag-chips span{-webkit-line-clamp:2}
 @media (max-height:760px){body.ag-fit .ag-chips span{-webkit-line-clamp:1}}
+
+/* ---------- aviso de atualização ---------- */
+.fresh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;align-self:flex-start;font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 8px;box-shadow:var(--shadow)}
+.fresh .ok{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#2A844B 16%,transparent);color:#2A844B;flex:none}
+:root[data-theme="dark"] .fresh .ok{color:#8AD0A2}
+.fresh .ok svg{width:13px;height:13px}
+.fresh b{color:var(--ink);font-weight:600}
+.fresh .sep{color:var(--line)}
+@media (max-width:560px){.fresh{border-radius:14px;font-size:13px;gap:2px 8px}.fresh .sep{display:none}.fresh>span:last-child{flex-basis:100%;padding-left:30px}}
 </style>
 </head>
 <body>
@@ -527,6 +536,7 @@ body.ag-fit .ag-chips span{-webkit-line-clamp:2}
   </section>
 
   <div class="view" id="view-aval" role="tabpanel" aria-labelledby="tab-aval">
+    <p class="fresh" id="fresh" hidden></p>
     <section class="news" id="evNews" role="status" hidden></section>
     <div class="avmode" role="group" aria-label="Vista das avaliações"><button type="button" data-m="agenda" aria-pressed="true">Agenda</button><button type="button" data-m="lista" aria-pressed="false">Lista</button></div>
     <div id="agenda" aria-live="polite"></div>
@@ -1331,14 +1341,35 @@ setTimeout(Lib.prefetch, 300);
 })();
 
 
+
+/* ---------- aviso "datas atualizadas" (para a turma saber que está em dia) ---------- */
+// Muda esta data sempre que confirmares as datas com o Moodle
+const MOODLE_CONFERIDO = "2026-11-24";
+function quandoTxt(d){
+  const h = new Date(), dd = Math.round((new Date(h.getFullYear(),h.getMonth(),h.getDate()) - new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);
+  const hora = pad(d.getHours()) + "h" + pad(d.getMinutes());
+  return dd===0 ? "hoje às " + hora : dd===1 ? "ontem às " + hora : dd<7 ? "há " + dd + " dias" : d.getDate() + " " + MON[d.getMonth()];
+}
+function renderFresh(iso){
+  const el = document.getElementById("fresh"); if(!el) return;
+  const d = iso ? new Date(iso) : null, c = parse(MOODLE_CONFERIDO);
+  el.innerHTML = '<span class="ok"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg></span>' +
+    (d && !isNaN(d) ? '<span>Datas atualizadas <b>' + quandoTxt(d) + '</b></span><span class="sep">·</span>' : '') +
+    '<span>conferidas com o Moodle a <b>' + c.getDate() + ' ' + MON[c.getMonth()] + '</b></span>';
+  el.hidden = false;
+  el.dataset.iso = iso || "";
+}
+setInterval(function(){ const el = document.getElementById("fresh"); if(el && !el.hidden) renderFresh(el.dataset.iso); }, 60000);
+
 /* ================= calendário a partir da folha do Drive ================= */
 function setUpd(iso){
+  renderFresh(iso);
   var el = document.getElementById("upd"); if(!el || !iso) return;
   var d = new Date(iso); if(isNaN(d)) return;
   el.textContent = d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + " às " + pad(d.getHours()) + "h" + pad(d.getMinutes());
 }
 (function(){
-  try{ var c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c) setUpd(c.atualizado); }catch(e){}
+  try{ var c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c) setUpd(c.atualizado); else renderFresh(""); }catch(e){ renderFresh(""); }
   if(!API_URL) return;
   fetch(API_URL + "?acao=calendario").then(function(r){ return r.json(); }).then(function(j){
     if(!j || !j.ok || !Array.isArray(j.eventos)) return;
