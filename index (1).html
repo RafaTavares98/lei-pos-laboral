@@ -20,7 +20,8 @@ if(["primavera","verao","outono","inverno"].indexOf(q)>=0)e=q;if(q==="normal")e=
 if(e)document.documentElement.dataset.season=e;})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 <style>
 :root{
   color-scheme:light;
@@ -94,7 +95,6 @@ body{
     radial-gradient(900px 460px at 85% -140px,var(--bg-glow1),transparent 70%),
     radial-gradient(700px 400px at 0% 8%,var(--bg-glow2),transparent 70%),
     var(--bg);
-  background-attachment:fixed;
   color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.55;
   padding-inline:16px;padding-block:28px 56px;min-height:100vh;
 }
@@ -340,6 +340,164 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
 footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- vista Agenda ---------- */
+.avmode{display:inline-flex;align-self:flex-start;gap:3px;padding:3px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--shadow)}
+.avmode button{font:600 13.5px/1 var(--body);color:var(--muted);background:transparent;border:0;border-radius:9px;padding:9px 14px;cursor:pointer}
+.avmode button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+body.ag-on .wrap{max-width:1240px}
+.ag-c{display:flex;flex-direction:column;gap:16px;min-width:0}
+.ag-top .avmode{align-self:center;box-shadow:none}
+#agenda{display:flex;flex-direction:column;gap:16px}
+.ag-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px 18px}
+.ag-mono{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.02em}
+.ag-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.ag-h h3{font:700 18px/1.2 var(--display);margin:0;color:var(--ink)}
+/* topo com a barra do semestre */
+.ag-top{display:grid;grid-template-columns:auto 1fr auto;gap:10px 28px;align-items:center}
+.ag-tt{display:flex;flex-direction:column;gap:4px}
+.ag-tt b{font:800 26px/1.05 var(--display);color:var(--ink);white-space:nowrap}
+.ag-semh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13.5px;color:var(--muted);margin-bottom:9px}
+.ag-semh b{color:var(--ink);font-weight:600}
+.ag-bar{position:relative;height:12px;border-radius:999px;background:var(--surface-2)}
+.ag-bar>i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 55%,transparent),var(--accent))}
+.ag-tick{position:absolute;top:-3px;width:5px;height:18px;margin-left:-2.5px;border-radius:2px;border:0;padding:0;background:var(--c);cursor:pointer;box-shadow:0 0 0 2px var(--surface)}
+.ag-tick:hover{transform:scaleY(1.2)}
+/* grelha principal */
+.ag-grid{display:grid;grid-template-columns:290px minmax(0,1fr) 300px;gap:16px;align-items:start}
+.ag-l{display:flex;flex-direction:column;gap:16px}
+/* cartão hoje */
+.ag-up{text-transform:uppercase}
+.ag-hoje h2{font:800 25px/1.15 var(--display);margin:6px 0 10px;color:var(--ink)}
+.ag-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.ag-pills span{font-family:var(--mono);font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:7px;padding:4px 8px}
+.ag-agora{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;border:0;border-radius:14px;padding:13px 14px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 70%,#000))}
+.ag-av{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font:700 13px var(--mono);background:rgba(255,255,255,.2)}
+.ag-ag-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ag-ag-t small{color:rgba(255,255,255,.85)}
+.ag-ag-t b{font:700 16px/1.2 var(--display)}
+.ag-ag-t span{font-size:13px;opacity:.92}
+.ag-ag-n{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.ag-ag-n b{font:800 24px var(--display)}
+.ag-ag-n small{font-size:11px;opacity:.85}
+:root[data-theme="dark"] .ag-agora{color:#0B1620}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ag-agora{color:#0B1620}}
+:root[data-theme="dark"] .ag-ag-t small,:root[data-theme="dark"] .ag-ag-n small{color:inherit}
+/* neste dia */
+.ag-vazio{margin:0;padding:18px;border:1px dashed var(--line);border-radius:12px;text-align:center;color:var(--muted);font-size:14px}
+.ag-tl{display:flex;flex-direction:column;gap:14px}
+.ag-ev{display:grid;grid-template-columns:12px 1fr;gap:10px}
+.ag-ev-dot{width:11px;height:11px;border-radius:50%;background:var(--c);margin-top:3px;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
+.ag-ev>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ag-ev-h{color:var(--c);font-weight:500}
+.ag-ev b{font-size:14.5px;color:var(--ink)}
+.ag-ev-t{font-size:14px;color:var(--ink)}
+.ag-ev-x{font-size:13px;color:var(--muted)}
+.ag-ev-a{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.ag-ev.past{opacity:.55}
+/* calendário do mês */
+.ag-nav{display:flex;gap:6px}
+.ag-nb{font:600 13px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;min-width:34px;height:32px;padding:0 10px;cursor:pointer}
+.ag-nb:hover{border-color:var(--accent)}
+.ag-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.ag-wd{text-align:left;padding-left:9px;font:500 11.5px var(--mono);color:var(--muted);padding-bottom:4px}
+.ag-day{position:relative;min-height:92px;display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:left;padding:7px;border:1px solid transparent;border-radius:11px;background:var(--surface-2);color:var(--ink);cursor:pointer;font:inherit;transition:border-color .15s,background .15s}
+.ag-day:hover{border-color:var(--line)}
+.ag-day.fds{background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
+.ag-day.fora{background:transparent;opacity:.45}
+.ag-n{font:500 13px var(--mono);width:26px;height:26px;display:grid;place-items:center;border-radius:8px}
+.ag-day.hoje .ag-n{background:var(--accent);color:var(--on-accent);font-weight:700}
+.ag-day.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.ag-dots{display:none;gap:3px;justify-content:center}
+.ag-dots i{width:6px;height:6px;border-radius:50%;background:var(--c)}
+.ag-chips{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ag-chips span{font-size:11.5px;line-height:1.25;padding:3px 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 16%,var(--surface));color:var(--ink);border-left:3px solid var(--c);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow-wrap:break-word;hyphens:auto}
+.ag-chips b{font:700 10.5px var(--mono);color:var(--c)}
+.ag-chips em{font-style:normal;font-size:11px;color:var(--muted);padding-left:4px}
+/* cadeiras */
+.ag-ucs{display:flex;flex-direction:column}
+.ag-uc{display:grid;grid-template-columns:1fr auto;gap:4px 12px;text-align:left;font:inherit;color:var(--ink);background:transparent;border:0;border-top:1px solid var(--line);padding:12px 0 12px 14px;position:relative;cursor:pointer}
+.ag-uc:first-of-type{border-top:0}
+.ag-uc::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:4px;background:var(--c)}
+.ag-uc:disabled{cursor:default}
+.ag-uc-i{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ag-uc-i b{font-size:14.5px;font-weight:600}
+.ag-uc-i span{font-size:12.5px;color:var(--muted)}
+.ag-uc-n{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.ag-uc-n b{font:800 22px var(--display);color:var(--c)}
+.ag-uc.urg .ag-uc-n b{color:var(--danger)}
+.ag-uc-n b.ag-tr{color:var(--muted)}
+.ag-uc-n small{font:11px var(--mono);color:var(--muted);margin-top:3px}
+.ag-seg{grid-column:1/-1;display:flex;gap:4px;margin-top:5px}
+.ag-seg i{flex:1;height:5px;border-radius:3px;background:color-mix(in srgb,var(--c) 22%,var(--surface-2))}
+.ag-seg i.feito{background:var(--c)}
+/* próximas */
+.ag-prox{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ag-prox .ag-pc{padding:12px 14px;gap:10px}
+.ag-pc{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-align:left;font:inherit;color:var(--ink);cursor:pointer;border-left:4px solid var(--c)}
+.ag-pd{display:flex;flex-direction:column;align-items:center;line-height:1;color:var(--c)}
+.ag-pd b{font:800 24px var(--display)}
+.ag-pd small{font:500 11px var(--mono);margin-top:3px}
+.ag-pt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ag-pt b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-pt span{font-size:12.5px;color:var(--muted)}
+/* ecrãs médios: cadeiras passam para baixo */
+@media (max-width:1180px){
+  .ag-grid{grid-template-columns:280px minmax(0,1fr)}
+  .ag-ucs{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
+  .ag-ucs .ag-h{grid-column:1/-1}
+  .ag-uc:nth-of-type(2){border-top:0}
+}
+/* telemóvel */
+@media (max-width:900px){
+  .ag-top{grid-template-columns:1fr}
+  .ag-tt b{font-size:22px}
+  .ag-grid{grid-template-columns:1fr}
+  .ag-l{display:contents}
+  .ag-hoje{order:1}.ag-mes{order:2}.ag-dia{order:3}.ag-ucs{order:4}
+  .ag-ucs{display:flex}
+  .ag-uc:nth-of-type(2){border-top:1px solid var(--line)}
+  .ag-day{min-height:46px;align-items:center;padding:5px 2px;gap:3px}
+  .ag-chips{display:none}
+  .ag-dots{display:flex}
+  .ag-prox{grid-template-columns:1fr;gap:10px}
+  .ag-card{padding:14px 15px}
+}
+@media (max-width:420px){.ag-cal{gap:3px}.ag-n{width:24px;height:24px;font-size:12.5px}}
+@media (max-width:900px){.ag-wd{text-align:center;padding-left:0}}
+
+/* ---- ajustar à janela (computador) ---- */
+body.ag-on.ag-fit .wrap{max-width:none;display:grid;grid-template-columns:1fr auto;gap:16px 20px;align-items:center}
+body.ag-on.ag-fit .wrap>*{grid-column:1/-1}
+body.ag-on.ag-fit .wrap>header{grid-column:1;gap:16px}
+body.ag-on.ag-fit .wrap>.navrow{grid-column:2;gap:10px}
+body.ag-on.ag-fit .badge{width:68px;height:68px;padding:3px}
+body.ag-on.ag-fit .badge img{width:62px;height:62px}
+body.ag-on.ag-fit h1{font-size:38px}
+body.ag-on.ag-fit .htxt{gap:8px}
+body.ag-on.ag-fit #agenda{gap:14px}
+body.ag-fit .ag-top{padding:12px 18px}
+body.ag-fit .ag-grid{gap:14px;min-height:0}
+body.ag-fit .ag-grid>*{height:100%;min-height:0}
+body.ag-fit .ag-l{display:flex;flex-direction:column;gap:14px}
+body.ag-fit .ag-dia{flex:1;overflow:auto;min-height:0}
+body.ag-fit .ag-c{gap:14px}
+body.ag-fit .ag-mes{flex:1;min-height:0;display:flex;flex-direction:column}
+body.ag-fit .ag-cal{flex:1;min-height:0;grid-auto-rows:minmax(0,1fr);grid-template-rows:auto}
+body.ag-fit .ag-day{min-height:0;overflow:hidden}
+body.ag-fit .ag-ucs{overflow:auto}
+body.ag-fit .ag-h{margin-bottom:10px}
+body.ag-fit .ag-chips span{-webkit-line-clamp:2}
+@media (max-height:760px){body.ag-fit .ag-chips span{-webkit-line-clamp:1}}
+
+/* ---------- aviso de atualização ---------- */
+.fresh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;align-self:flex-start;font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 8px;box-shadow:var(--shadow)}
+.fresh .ok{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#2A844B 16%,transparent);color:#2A844B;flex:none}
+:root[data-theme="dark"] .fresh .ok{color:#8AD0A2}
+.fresh .ok svg{width:13px;height:13px}
+.fresh b{color:var(--ink);font-weight:600}
+.fresh .sep{color:var(--line)}
+@media (max-width:560px){.fresh{border-radius:14px;font-size:13px;gap:2px 8px}.fresh .sep{display:none}.fresh>span:last-child{flex-basis:100%;padding-left:30px}}
 </style>
 </head>
 <body>
@@ -378,7 +536,11 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
   </section>
 
   <div class="view" id="view-aval" role="tabpanel" aria-labelledby="tab-aval">
+    <p class="fresh" id="fresh" hidden></p>
     <section class="news" id="evNews" role="status" hidden></section>
+    <div class="avmode" role="group" aria-label="Vista das avaliações"><button type="button" data-m="agenda" aria-pressed="true">Agenda</button><button type="button" data-m="lista" aria-pressed="false">Lista</button></div>
+    <div id="agenda" aria-live="polite"></div>
+    <div class="view" id="listaModo" hidden>
     <section class="term" aria-live="polite">
       <div class="term-bar"><i></i><i></i><i></i><span>proxima_avaliacao.sh</span></div>
       <div class="term-body" id="next"></div>
@@ -394,6 +556,7 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
       <div class="filters" id="filters" role="group" aria-label="Filtrar por unidade curricular"></div>
       <div class="tl" id="list"></div>
     </section>
+    </div>
   </div>
 
   <div class="view" id="view-lib" role="tabpanel" aria-labelledby="tab-lib" hidden>
@@ -450,23 +613,38 @@ const UC = {
 };
 // d: "ano-mês-dia" · s/e: hora início/fim opcional · k: tipo · x: nota · tags: etiquetas
 let EVENTS = [
-  {uc:"fp", d:"2026-10-06", t:"Lista 1 · Exercícios 2, 3, 4 e 5", k:"Entrega", x:"Só estes 4 exercícios, não é a lista toda. Tema: operadores e fluxogramas. Submeter no Moodle até às 23h59.", tags:["trabalho de casa","Moodle"], link:"https://moodle.ensinolusofona.pt/my/courses.php"},
-  {uc:"alg", d:"2026-10-28", t:"1.ª avaliação", k:"Avaliação"},
-  {uc:"fbd", d:"2026-11-15", t:"Trabalho prático · M1", k:"Entrega", x:"Modelo E-A + esquema relacional. Grupos de 2.", tags:["35% (TP)","mín. 8,0"]},
-  {uc:"mat", d:"2026-11-16", t:"1.ª avaliação", k:"Avaliação"},
-  {uc:"alg", d:"2026-12-02", t:"2.ª avaliação", k:"Avaliação"},
-  {uc:"fbd", d:"2027-01-10", t:"Trabalho prático · entrega final", k:"Entrega", tags:["35% (TP)"]},
-  {uc:"fbd", d:"2027-01-15", s:"19:00", e:"22:40", t:"Defesa do TP", k:"Defesa", x:"Defesas a 15 e 22/01."},
-  {uc:"fbd", d:"2027-01-22", s:"19:00", e:"21:00", t:"Defesa do TP", k:"Defesa"},
-  {uc:"mat", d:"2027-01-25", t:"2.ª avaliação", k:"Avaliação"},
-  {uc:"fbd", d:"2027-02-05", s:"19:00", e:"22:00", t:"Teste", k:"Teste", tags:["65%","mín. 8,0"]}
+  {"uc": "fp", "d": "2026-10-06", "t": "Lista 1 · Exercícios 2, 3, 4 e 5", "k": "Entrega", "x": "Só estes 4 exercícios, não é a lista toda. Tema: operadores e fluxogramas. Submeter no Moodle até às 23h59.", "tags": ["trabalho de casa", "Moodle"], "link": "https://moodle.ensinolusofona.pt/my/courses.php"},
+  {"uc": "fbd", "d": "2026-10-07", "e": "23:59", "t": "Ficha 02 — Do texto ao diagrama", "k": "Entrega", "x": "1. Diagramas da loja online e da biblioteca (PDF/PNG do draw.io, ou .mmd), com as tabelas de atributos — só entidades e atributos, sem relações.\n2. ficha_02.sql com as consultas 1–7 do aquecimento SQL e os resultados em comentário.\n3. Respostas 2a–2d e a declaração de uso de IA (mesmo que \"não usei\") — num ficha_02.md ou na caixa de texto.", "link": "https://moodle.ensinolusofona.pt/mod/assign/view.php?id=172489"},
+  {"uc": "fp", "d": "2026-10-12", "e": "23:59", "t": "Lista 3-Condicoes-Fluxograms-Exercícios 7, 9, 10, 13 e 14", "k": "Entrega", "link": "https://moodle.ensinolusofona.pt/mod/assign/view.php?id=174629"},
+  {"uc": "fbd", "d": "2026-10-14", "e": "23:59", "t": "Ficha 03 — Relações", "k": "Entrega", "link": "https://moodle.ensinolusofona.pt/mod/assign/view.php?id=175613"},
+  {"uc": "fp", "d": "2026-10-20", "s": "19:00", "e": "21:00", "t": "Python-Lista 6-Condicoes-Fluxograms-Exercícios 7, 9, 10, 13 e 14 (Casa - Turma Noite)", "k": "Entrega", "link": "https://moodle.ensinolusofona.pt/mod/assign/view.php?id=180887"},
+  {"uc": "alg", "d": "2026-10-28", "s": "19:00", "e": "21:00", "t": "1.ª avaliação", "k": "Teste"},
+  {"uc": "fbd", "d": "2026-11-15", "t": "Trabalho prático · M1", "k": "Entrega", "x": "Modelo E-R + esquema relacional. Grupos de 2.", "tags": ["30% do TP"]},
+  {"uc": "mat", "d": "2026-11-16", "s": "19:00", "e": "21:00", "t": "1.ª avaliação", "k": "Teste", "tags": ["mín. 7,5"]},
+  {"uc": "ac", "d": "2026-11-19", "s": "19:00", "e": "21:00", "t": "Teste", "k": "Teste", "tags": ["50% da nota"]},
+  {"uc": "fis", "d": "2026-11-26", "s": "19:00", "e": "21:00", "t": "Teste", "k": "Teste", "x": "Levar documento de identificação com fotografia. Calculadora não gráfica permitida.", "tags": ["mín. 8,0"]},
+  {"uc": "fbd", "d": "2026-12-04", "s": "19:00", "e": "21:00", "t": "Mini-teste", "k": "Teste", "x": "Na aula de SQL III (JOIN). Formativo: não conta para a nota.", "tags": ["formativo"], "link": "https://moodle.ensinolusofona.pt/course/view.php?id=26209"},
+  {"uc": "alg", "d": "2026-12-09", "s": "19:00", "e": "21:00", "t": "2.ª avaliação", "k": "Teste", "x": "2.º teste. No mesmo dia há o teste global, só para quem não fez o 1.º teste."},
+  {"uc": "fbd", "d": "2027-01-10", "t": "Trabalho prático · entrega final", "k": "Entrega", "x": "DDL, dados, consultas e relatório.", "tags": ["70% do TP", "TP vale 35%"]},
+  {"uc": "fis", "d": "2027-01-13", "s": "19:00", "e": "21:00", "t": "Teste (A data pode sofrer alterações)", "k": "Teste", "x": "2.º teste. No mesmo dia há o teste global, só para quem não fez o 1.º teste. Levar documento de identificação com fotografia. Calculadora não gráfica permitida.", "tags": ["mín. 8,0"]},
+  {"uc": "ac", "d": "2027-01-14", "s": "19:00", "e": "21:00", "t": "Teste", "k": "Teste", "x": "No Moodle aparece 14-01-2026 por engano: é em 2027.", "tags": ["50% da nota"]},
+  {"uc": "fbd", "d": "2027-01-15", "s": "19:00", "e": "22:40", "t": "Defesa do TP", "k": "Defesa", "x": "Defesas no Bloco B. Na mesma aula: revisão e teste-modelo."},
+  {"uc": "fp", "d": "2027-01-20", "s": "19:00", "e": "21:00", "t": "Teste final", "k": "Teste", "x": "Datas da apresentação/defesa dos trabalhos finais ainda por definir."},
+  {"uc": "fbd", "d": "2027-01-22", "s": "19:00", "e": "21:00", "t": "Teste", "k": "Teste", "x": "60 min (TAG: 100 min).", "tags": ["65%", "mín. 8,0"]},
+  {"uc": "fp", "d": "2027-01-24", "e": "23:59", "t": "Trabalhos de avaliação · prazo", "k": "Entrega"},
+  {"uc": "mat", "d": "2027-01-25", "s": "19:00", "e": "21:00", "t": "2.ª avaliação", "k": "Teste", "x": "2.º teste. No mesmo dia há o teste global, só para quem não fez o 1.º teste.", "tags": ["mín. 7,5"]},
+  {"uc": "fp", "d": "2027-02-01", "s": "19:00", "e": "21:00", "t": "Exame", "k": "Exame"}
 ];
 // cadeiras sem datas: calculado sozinho
 let PENDING = [];
 // última versão do calendário guardada neste dispositivo (vinda da folha)
 // datas escritas aqui (GitHub) + datas da folha do Drive: juntam-se, sem repetir
 const EMBED = EVENTS.slice();
-function mergeEv(a, b){ const m = new Map(); a.concat(b).forEach(e=>m.set([e.uc,e.d,e.t].join("|"), e)); return Array.from(m.values()).sort((x,y)=>(x.d+(x.s||"")).localeCompare(y.d+(y.s||""))); }
+// a folha separa etiquetas por vírgulas: "mín. 8,0" chega partido em "mín. 8" + "0" — volta a juntar
+function fixTags(e){ if(!e.tags || !e.tags.length) return e; const t = []; e.tags.forEach(g=>{ const p = t[t.length-1]; if(p && /\d$/.test(p) && /^\d+$/.test(g)) t[t.length-1] = p + "," + g; else t.push(g); }); return Object.assign({}, e, { tags: t }); }
+// datas antigas que já não existem: nunca aparecem, venham de onde vierem (cópias guardadas, folha antiga)
+const REMOVIDAS = ["alg|2026-12-02", "fbd|2027-02-05"];
+function mergeEv(a, b){ const m = new Map(); a.concat(b).map(fixTags).filter(e=>REMOVIDAS.indexOf(e.uc+"|"+e.d)===-1).forEach(e=>m.set([e.uc,e.d,e.t].join("|"), e)); return Array.from(m.values()).sort((x,y)=>(x.d+(x.s||"")).localeCompare(y.d+(y.s||""))); }
 EVENTS = mergeEv(EMBED, []);
 try{ const c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c && Array.isArray(c.eventos)) EVENTS = mergeEv(EMBED, c.eventos); }catch(e){}
 PENDING = Object.keys(UC).filter(k=>!EVENTS.some(e=>e.uc===k));
@@ -717,6 +895,26 @@ const Lib = (()=>{
   const size = b => b<1024?`${b} B`:b<1048576?`${Math.round(b/1024)} KB`:`${(b/1048576).toFixed(1).replace(".",",")} MB`;
   const dstr = iso => { const d=new Date(iso); return `${d.getDate()} ${MON[d.getMonth()]}`; };
   const plural = (n,s,p) => `${n} ${n===1?s:p}`;
+  // pastas que existem no Drive (inclui as criadas à mão, ex.: Formulários)
+  let PASTAS = [];
+  try{ const c = JSON.parse(localStorage.getItem("lei-lib-pastas") || "null"); if(Array.isArray(c)) PASTAS = c; }catch(e){}
+  const tName = (t, f) => TIPOS[t] || (f && f.tn) || ((PASTAS.find(p=>p.tipo===t) || (files||[]).find(x=>x.tipo===t) || {}).tn) || "Outros";
+  // ordem: tipos normais primeiro, depois as pastas criadas no Drive (por nome)
+  function tiposDe(uc, fs){
+    const extra = new Set(PASTAS.filter(p=>p.uc===uc && !TIPOS[p.tipo]).map(p=>p.tipo));
+    fs.forEach(f=>{ if(!TIPOS[f.tipo]) extra.add(f.tipo); });
+    return Object.keys(TIPOS).filter(t=>fs.some(f=>f.tipo===t)).concat([...extra].sort((a,b)=>tName(a).localeCompare(tName(b),"pt")));
+  }
+  function fillTipos(){
+    const uc = $("upUc").value, cur = $("upTipo").value;
+    const ex = PASTAS.filter(p=>p.uc===uc && !TIPOS[p.tipo]).sort((a,b)=>a.tn.localeCompare(b.tn,"pt"));
+    // só as pastas que existem nesta cadeira (respeita as que apagaste no Drive)
+    const tem = new Set(PASTAS.filter(p=>p.uc===uc).map(p=>p.tipo));
+    const base = Object.keys(TIPOS).filter(k=>!tem.size || tem.has(k));
+    $("upTipo").innerHTML = `<option value="">Escolhe…</option>` + base.map(k=>`<option value="${k}">${TIPOS[k]}</option>`).join("") +
+      ex.map(p=>`<option value="${esc(p.tipo)}">${esc(p.tn)}</option>`).join("");
+    if([...$("upTipo").options].some(o=>o.value===cur)) $("upTipo").value = cur;
+  }
 
   // ficheiros novos: o que entrou desde a última vez que esta pessoa abriu a biblioteca
   let libSeen = null, libPrev = null;
@@ -764,18 +962,18 @@ const Lib = (()=>{
 
   function setup(){
     $("upUc").innerHTML = `<option value="">Escolhe…</option>` + Object.keys(LUC).map(k=>`<option value="${k}">${LUC[k].n}</option>`).join("");
-    $("upTipo").innerHTML = `<option value="">Escolhe…</option>` + Object.keys(TIPOS).map(k=>`<option value="${k}">${TIPOS[k]}</option>`).join("");
+    fillTipos(); $("upUc").addEventListener("change", fillTipos);
 
     $("gateForm").addEventListener("submit", async ev=>{
       ev.preventDefault();
       const btn = $("gateForm").querySelector("button"), m = $("gateMsg");
-      code = $("codeIn").value.trim(); if(!code) return;
+      code = $("codeIn").value.replace(/\s+/g, "").toUpperCase(); if(!code) return; // o campo mostra maiúsculas: envia também em maiúsculas
       btn.disabled = true; m.className = "msg"; m.innerHTML = '<span class="spin"></span> a verificar…';
       try{
         m.innerHTML = '<span class="spin"></span> a abrir a biblioteca…';
         const r = await api({ acao:"listar" });
         try{ localStorage.setItem("lei-lib-code", code); }catch(e){}
-        setFiles(r.ficheiros || []);
+        setFiles(r.ficheiros || [], r.pastas);
         m.textContent = ""; $("gate").hidden = true; $("lib").hidden = false; render();
       }catch(e){ m.textContent = e.message==="codigo" ? "Código errado." : e.message; m.className = "msg err"; }
       btn.disabled = false;
@@ -784,7 +982,7 @@ const Lib = (()=>{
     $("upToggle").addEventListener("click", ()=>{
       const p = $("upPanel"), show = p.hidden; p.hidden = !show;
       $("upToggle").setAttribute("aria-expanded", String(show));
-      if(show){ if(view!=="home") $("upUc").value = view; p.scrollIntoView({ behavior:"smooth", block:"nearest" }); }
+      if(show){ if(view!=="home") $("upUc").value = view; fillTipos(); p.scrollIntoView({ behavior:"smooth", block:"nearest" }); }
     });
     $("upClose").addEventListener("click", ()=>{ $("upPanel").hidden = true; $("upToggle").setAttribute("aria-expanded","false"); });
     $("upPor").value = nome;
@@ -841,8 +1039,9 @@ const Lib = (()=>{
     if(ok){ view = uc; pending = null; load(); }
   }
 
-  function setFiles(f){
+  function setFiles(f, pastas){
     files = f;
+    if(Array.isArray(pastas)){ PASTAS = pastas; try{ localStorage.setItem("lei-lib-pastas", JSON.stringify(pastas)); }catch(e){} if(started) fillTipos(); }
     if(!libSeen){ libSeen = new Date().toISOString(); try{ localStorage.setItem("lei-lib-seen", libSeen); }catch(e){} }
     if(!$("view-lib").hidden) markSeen(); else badge();
     try{ localStorage.setItem("lei-lib-cache", JSON.stringify(f)); }catch(e){}
@@ -854,8 +1053,8 @@ const Lib = (()=>{
     if(!files) $("libList").innerHTML = `<p class="libempty"><span class="spin"></span> a carregar a biblioteca…</p>`;
     pending = api({ acao:"listar" }).then(r=>{
       const novo = r.ficheiros || [];
-      const mudou = JSON.stringify(novo) !== JSON.stringify(files);
-      setFiles(novo);
+      const mudou = JSON.stringify(novo) !== JSON.stringify(files) || JSON.stringify(r.pastas || PASTAS) !== JSON.stringify(PASTAS);
+      setFiles(novo, r.pastas);
       if(mudou) render();
     }).catch(e=>{
       if(e.message!=="codigo" && !files) $("libList").innerHTML = `<p class="libempty">${esc(e.message)}<br><br><button class="btn ghost" type="button" onclick="Lib.load()">Tentar de novo</button></p>`;
@@ -871,7 +1070,7 @@ const Lib = (()=>{
     const ext = (f.nome.includes(".") ? f.nome.split(".").pop() : "doc").slice(0,4);
     const d = new Date(f.data), quando = `${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()!==new Date().getFullYear()?d.getFullYear()+" ":""}às ${pad(d.getHours())}h${pad(d.getMinutes())}`;
     const quem = `Enviado ${f.por ? "por " + f.por + " " : ""}a ${quando}`;
-    const meta = [showUc ? LUC[f.uc].s : null, showUc ? TIPOS[f.tipo] : null, size(f.tam)].filter(Boolean).join(" · ");
+    const meta = [showUc ? LUC[f.uc].s : null, showUc ? tName(f.tipo, f) : null, size(f.tam)].filter(Boolean).join(" · ");
     return `<button class="frow" type="button" data-id="${esc(f.id)}" style="--c:${lc(f.uc)}" aria-label="Descarregar ${esc(f.nome)}">
       <span class="ext">${esc(ext)}</span>
       <span class="fmeta"><span class="fname">${isNewF(f) ? '<span class="newtag">novo</span>' : ""}${esc(f.nome)}</span><span class="fsub">${esc(quem)}</span><span class="fsub">${esc(meta)}</span></span>
@@ -902,7 +1101,7 @@ const Lib = (()=>{
     }
 
     const fs = files.filter(f=>f.uc===view);
-    const tipos = Object.keys(TIPOS).filter(t=>fs.some(f=>f.tipo===t));
+    const tipos = tiposDe(view, fs);
     const openT = tipos.includes("testes") ? "testes" : tipos[0];
     list.innerHTML = `<div class="uchead" style="--c:${lc(view)}">
         <button class="back" type="button">${BACK}Cadeiras</button>
@@ -911,7 +1110,7 @@ const Lib = (()=>{
       (tipos.length ? tipos.map(t=>{
         const ft = fs.filter(f=>f.tipo===t);
         const nn = ft.filter(isNewF).length;
-        return `<details class="sec"${t===openT||nn?" open":""}><summary>${TIPOS[t]} <em>${ft.length}</em>${nn ? `<span class="newtag">${nn} ${nn===1?"novo":"novos"}</span>` : ""}</summary><div class="flist">${ft.map(f=>frow(f,false)).join("")}</div></details>`;
+        return `<details class="sec"${t===openT||nn?" open":""}><summary>${esc(tName(t, ft[0]))} <em>${ft.length}</em>${nn ? `<span class="newtag">${nn} ${nn===1?"novo":"novos"}</span>` : ""}</summary><div class="flist">${ft.length ? ft.map(f=>frow(f,false)).join("") : `<p class="libempty">Pasta vazia por agora.</p>`}</div></details>`;
       }).join("") : `<p class="libempty">Ainda não há ficheiros de ${esc(LUC[view].s)}. Tens algum? Usa “Adicionar”.</p>`);
   }
 
@@ -1016,7 +1215,8 @@ setTimeout(Lib.prefetch, 300);
     return out;
   }
   function draw(){
-    const r = window.devicePixelRatio || 1, W = c.clientWidth, H = c.clientHeight;
+    const r = Math.min(window.devicePixelRatio || 1, 1.5), W = c.clientWidth, H = Math.max(c.clientHeight, screen.height || 0); // resolução limitada: decoração não precisa de mais
+    c.style.height = H + "px";
     c.width = W * r; c.height = H * r; x.setTransform(r, 0, 0, r, 0, 0); x.clearRect(0, 0, W, H);
     const dark = Theme.current() === "dark";
     if(dark){
@@ -1097,7 +1297,8 @@ setTimeout(Lib.prefetch, 300);
     }
   }
   draw();
-  let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw, 200); });
+  // no telemóvel a barra do browser muda a altura ao fazer scroll: só redesenha se mudar a largura
+  let t, larg = window.innerWidth; addEventListener("resize", () => { if(window.innerWidth === larg) return; larg = window.innerWidth; clearTimeout(t); t = setTimeout(draw, 200); });
   document.addEventListener("themechange", draw);
 })();
 
@@ -1144,14 +1345,35 @@ setTimeout(Lib.prefetch, 300);
 })();
 
 
+
+/* ---------- aviso "datas atualizadas" (para a turma saber que está em dia) ---------- */
+// Muda esta data sempre que confirmares as datas com o Moodle
+const MOODLE_CONFERIDO = "2026-11-24";
+function quandoTxt(d){
+  const h = new Date(), dd = Math.round((new Date(h.getFullYear(),h.getMonth(),h.getDate()) - new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);
+  const hora = pad(d.getHours()) + "h" + pad(d.getMinutes());
+  return dd===0 ? "hoje às " + hora : dd===1 ? "ontem às " + hora : dd<7 ? "há " + dd + " dias" : d.getDate() + " " + MON[d.getMonth()];
+}
+function renderFresh(iso){
+  const el = document.getElementById("fresh"); if(!el) return;
+  const d = iso ? new Date(iso) : null, c = parse(MOODLE_CONFERIDO);
+  el.innerHTML = '<span class="ok"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg></span>' +
+    (d && !isNaN(d) ? '<span>Datas atualizadas <b>' + quandoTxt(d) + '</b></span><span class="sep">·</span>' : '') +
+    '<span>conferidas com o Moodle a <b>' + c.getDate() + ' ' + MON[c.getMonth()] + '</b></span>';
+  el.hidden = false;
+  el.dataset.iso = iso || "";
+}
+setInterval(function(){ const el = document.getElementById("fresh"); if(el && !el.hidden) renderFresh(el.dataset.iso); }, 60000);
+
 /* ================= calendário a partir da folha do Drive ================= */
 function setUpd(iso){
+  renderFresh(iso);
   var el = document.getElementById("upd"); if(!el || !iso) return;
   var d = new Date(iso); if(isNaN(d)) return;
   el.textContent = d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + " às " + pad(d.getHours()) + "h" + pad(d.getMinutes());
 }
 (function(){
-  try{ var c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c) setUpd(c.atualizado); }catch(e){}
+  try{ var c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c) setUpd(c.atualizado); else renderFresh(""); }catch(e){ renderFresh(""); }
   if(!API_URL) return;
   fetch(API_URL + "?acao=calendario").then(function(r){ return r.json(); }).then(function(j){
     if(!j || !j.ok || !Array.isArray(j.eventos)) return;
@@ -1185,9 +1407,10 @@ const ONESIGNAL_APP_ID = "ba347ac4-d19b-4449-8dad-20b7c366024b";
     return;
   }
 
-  var s = document.createElement("script");
-  s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"; s.defer = true;
-  document.head.appendChild(s);
+  // o sistema de notificações só carrega depois de a página estar pronta (não atrasa a abertura)
+  function carregarSDK(){ var s = document.createElement("script");
+    s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"; s.async = true; document.head.appendChild(s); }
+  if(document.readyState === "complete") setTimeout(carregarSDK, 1500); else addEventListener("load", function(){ setTimeout(carregarSDK, 1500); });
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal){
     var base = location.pathname.replace(/[^/]*$/, ""); // ex.: /lei-pos-laboral/
@@ -1222,6 +1445,165 @@ const ONESIGNAL_APP_ID = "ba347ac4-d19b-4449-8dad-20b7c366024b";
     OneSignal.Notifications.addEventListener("permissionChange", estado);
     estado();
   });
+})();
+
+/* ================= vista Agenda (estilo agenda pessoal) ================= */
+const Agenda = (function(){
+  var AB = { alg:"ALG", mat:"MAT", fbd:"FBD", fp:"FP", fis:"FÍS", ac:"AC" };
+  var WDS = ["S","T","Q","Q","S","S","D"];
+  var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+  var key = function(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); };
+  var el = function(id){ return document.getElementById(id); };
+  var hoje = midnight();
+  var sel = key(hoje), mes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+  var modo = "agenda";
+  try{ modo = localStorage.getItem("lei-aval-modo") || "agenda"; }catch(e){}
+
+  function evs(){ return EVENTS.filter(function(e){ return UC[e.uc]; }); }
+  function doDia(k){ return evs().filter(function(e){ return e.d === k; }); }
+  function hora(e){ return e.s ? e.s.replace(":","h") + (e.e ? " – " + e.e.replace(":","h") : "") : (e.k === "Entrega" ? "até às 23h59" : "19h00"); }
+  function cumprimento(){ var h = new Date().getHours(); return h < 6 ? "Boa noite" : h < 13 ? "Bom dia" : h < 20 ? "Boa tarde" : "Boa noite"; }
+  function dLabel(n){ return n === 0 ? "hoje" : n === 1 ? "amanhã" : n + " dias"; }
+
+  function topo(){
+    var span = SEM_END - SEM_START, pos = function(d){ return Math.min(100, Math.max(0, (d - SEM_START) / span * 100)); };
+    var tp = pos(hoje), wkT = Math.ceil(span / 6048e5), wk = Math.min(Math.max(1, Math.floor((hoje - SEM_START) / 6048e5) + 1), wkT);
+    var falta = Math.max(0, Math.round((SEM_END - hoje) / 864e5));
+    var ticks = evs().map(function(e){ var d = parse(e.d); return '<button class="ag-tick" type="button" data-d="' + e.d + '" style="left:' + pos(d) + '%;--c:' + col(e.uc) + '" title="' + d.getDate() + ' ' + MON[d.getMonth()] + ' · ' + esc(UC[e.uc].n) + ': ' + esc(e.t) + '" aria-label="' + d.getDate() + ' ' + MON[d.getMonth()] + ', ' + esc(UC[e.uc].n) + '"></button>'; }).join("");
+    return '<div class="ag-top ag-card">' +
+      '<div class="ag-tt"><span class="ag-mono">turma@lei:~$ ./agenda</span><b>Agenda da turma</b></div>' +
+      '<div class="ag-sem"><div class="ag-semh"><span><b>1.º semestre · semana ' + wk + ' de ' + wkT + '</b> · LEI pós-laboral</span><span class="ag-mono">' + Math.round(tp) + '% · faltam ' + falta + ' dias</span></div>' +
+      '<div class="ag-bar"><i style="width:' + tp + '%"></i>' + ticks + '</div></div>' +
+      '<div class="avmode" role="group" aria-label="Vista das avaliações"><button type="button" data-m="agenda" aria-pressed="true">Agenda</button><button type="button" data-m="lista" aria-pressed="false">Lista</button></div></div>';
+  }
+
+  function cartaoHoje(){
+    var now = new Date(), d = hoje;
+    var up = evs().filter(function(e){ return target(e) > now; }).sort(function(a,b){ return target(a) - target(b); });
+    var fim = SEM_END > d ? evs().filter(function(e){ return diff(parse(e.d)) >= 0; }).length : 0;
+    var h = '<div class="ag-card ag-hoje"><span class="ag-mono ag-up">' + WDL[d.getDay()].split("-")[0] + ' · ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() + '</span>' +
+      '<h2>' + cumprimento() + '!</h2><div class="ag-pills"><span>' + fim + ' ' + (fim === 1 ? "avaliação" : "avaliações") + ' por fazer</span>' + (d.getDay() > 0 && d.getDay() < 6 ? '<span>aulas à noite</span>' : '<span>fim de semana</span>') + '</div>';
+    if(up.length){
+      var e = up[0], n = diff(parse(e.d)), pd = parse(e.d);
+      h += '<button class="ag-agora" type="button" data-d="' + e.d + '" style="--c:' + col(e.uc) + '">' +
+        '<span class="ag-av">' + AB[e.uc] + '</span>' +
+        '<span class="ag-ag-t"><small class="ag-mono">' + (n === 0 ? "hoje" : "próxima") + ' · ' + pd.getDate() + ' ' + MON[pd.getMonth()] + '</small><b>' + esc(UC[e.uc].s) + '</b><span>' + esc(e.t) + '</span></span>' +
+        '<span class="ag-ag-n"><b>' + (n <= 1 ? dLabel(n) : n) + '</b>' + (n > 1 ? '<small>dias</small>' : '') + '</span></button>';
+    }
+    return h + '</div>';
+  }
+
+  function cartaoDia(){
+    var d = parse(sel), lst = doDia(sel), n = diff(d);
+    var t = n === 0 ? "Hoje" : n === 1 ? "Amanhã" : n === -1 ? "Ontem" : WDL[d.getDay()].split("-")[0];
+    var h = '<div class="ag-card ag-dia"><div class="ag-h"><h3>' + t + ' · ' + d.getDate() + ' de ' + MONTHS[d.getMonth()] + '</h3></div>';
+    if(!lst.length) return h + '<p class="ag-vazio">Nada marcado para este dia.</p></div>';
+    return h + '<div class="ag-tl">' + lst.map(function(e){
+      var past = target(e) < new Date();
+      return '<div class="ag-ev' + (past ? " past" : "") + '" style="--c:' + col(e.uc) + '"><span class="ag-ev-dot"></span><div>' +
+        '<span class="ag-mono ag-ev-h">' + hora(e) + ' · ' + esc(e.k) + '</span>' +
+        '<b>' + esc(UC[e.uc].n) + '</b><span class="ag-ev-t">' + esc(e.t) + '</span>' +
+        (e.x ? '<span class="ag-ev-x">' + esc(e.x) + '</span>' : '') +
+        ((e.tags || []).length ? '<div class="tags">' + e.tags.map(function(g){ return '<span class="tag soft">' + esc(g) + '</span>'; }).join("") + '</div>' : '') +
+        (past ? '' : '<div class="ag-ev-a">' + (e.link ? '<a class="gcal moodle" href="' + esc(e.link) + '" target="_blank" rel="noopener">' + linkIcon() + 'Moodle</a>' : '') + '<a class="gcal" href="' + gcal(e) + '" target="_blank" rel="noopener">' + CAL_ICON + 'Calendário</a></div>') +
+        '</div></div>';
+    }).join("") + '</div></div>';
+  }
+
+  function calendario(){
+    var y = mes.getFullYear(), m = mes.getMonth();
+    var ini = new Date(y, m, 1), off = (ini.getDay() + 6) % 7, start = new Date(y, m, 1 - off);
+    var semanas = Math.ceil((off + new Date(y, m + 1, 0).getDate()) / 7);
+    var h = '<div class="ag-card ag-mes"><div class="ag-h"><h3>' + MONTHS[m].replace(/^./, function(c){ return c.toUpperCase(); }) + ' ' + y + '</h3>' +
+      '<div class="ag-nav"><button type="button" class="ag-nb" data-nav="hoje">Hoje</button><button type="button" class="ag-nb" data-nav="-1" aria-label="Mês anterior">‹</button><button type="button" class="ag-nb" data-nav="1" aria-label="Mês seguinte">›</button></div></div>' +
+      '<div class="ag-cal" role="grid">' + WDS.map(function(w){ return '<span class="ag-wd">' + w + '</span>'; }).join("");
+    for(var i = 0; i < semanas * 7; i++){
+      var d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i), k = key(d), lst = doDia(k);
+      var cls = "ag-day" + (d.getMonth() !== m ? " fora" : "") + (k === key(hoje) ? " hoje" : "") + (k === sel ? " sel" : "") + (lst.length ? " tem" : "") + (d.getDay() === 0 || d.getDay() === 6 ? " fds" : "");
+      h += '<button type="button" class="' + cls + '" data-d="' + k + '" aria-label="' + d.getDate() + ' de ' + MONTHS[d.getMonth()] + (lst.length ? ', ' + lst.length + (lst.length === 1 ? ' avaliação' : ' avaliações') : '') + '"><span class="ag-n">' + d.getDate() + '</span>' +
+        (lst.length ? '<span class="ag-dots">' + lst.map(function(e){ return '<i style="--c:' + col(e.uc) + '"></i>'; }).join("") + '</span>' +
+          '<span class="ag-chips">' + lst.slice(0, 2).map(function(e){ return '<span style="--c:' + col(e.uc) + '"><b>' + AB[e.uc] + '</b> ' + esc(e.t) + '</span>'; }).join("") + (lst.length > 2 ? '<em>+' + (lst.length - 2) + '</em>' : '') + '</span>' : '') +
+        '</button>';
+    }
+    return h + '</div></div>';
+  }
+
+  function cadeiras(){
+    var now = new Date();
+    return '<div class="ag-card ag-ucs"><div class="ag-h"><h3>Cadeiras</h3><span class="ag-mono">1.º semestre</span></div>' + Object.keys(UC).map(function(k){
+      var all = evs().filter(function(e){ return e.uc === k; });
+      var nx = all.filter(function(e){ return target(e) > now; })[0];
+      var n = nx ? diff(parse(nx.d)) : null, pd = nx ? parse(nx.d) : null;
+      var seg = all.map(function(e){ return '<i class="' + (target(e) < now ? "feito" : "") + '"></i>'; }).join("");
+      return '<button type="button" class="ag-uc' + (n !== null && n <= 7 ? " urg" : "") + '" ' + (nx ? 'data-d="' + nx.d + '"' : 'disabled') + ' style="--c:' + col(k) + '">' +
+        '<span class="ag-uc-i"><b>' + esc(UC[k].n) + '</b><span>' + (nx ? esc(nx.t) + ' · ' + WD[pd.getDay()] + ' ' + pd.getDate() + ' ' + MON[pd.getMonth()] : (all.length ? "Avaliações concluídas" : "Datas por anunciar")) + '</span></span>' +
+        '<span class="ag-uc-n">' + (nx ? '<b>' + (n <= 1 ? dLabel(n) : n) + '</b>' + (n > 1 ? '<small>dias</small>' : '') : '<b class="ag-tr">—</b><small>sem data</small>') + '</span>' +
+        (all.length ? '<span class="ag-seg">' + seg + '</span>' : '') + '</button>';
+    }).join("") + '</div>';
+  }
+
+  function proximos(){
+    var now = new Date();
+    var up = evs().filter(function(e){ return target(e) > now; }).sort(function(a,b){ return target(a) - target(b); }).slice(1, 4);
+    if(!up.length) return "";
+    return '<div class="ag-prox">' + up.map(function(e){
+      var d = parse(e.d), n = diff(d);
+      return '<button type="button" class="ag-card ag-pc" data-d="' + e.d + '" style="--c:' + col(e.uc) + '"><span class="ag-pd"><b>' + d.getDate() + '</b><small>' + MON[d.getMonth()].toUpperCase() + '</small></span>' +
+        '<span class="ag-pt"><b>' + esc(UC[e.uc].s) + ' · ' + esc(e.t) + '</b><span>' + WD[d.getDay()] + ' · ' + esc(e.k) + (e.s ? ' · ' + e.s.replace(":","h") : '') + '</span></span><span class="ag-mono ag-pn">' + n + ' d</span></button>';
+    }).join("") + '</div>';
+  }
+
+  function render(){
+    var box = el("agenda"); if(!box) return;
+    hoje = midnight();
+    box.innerHTML = topo() + '<div class="ag-grid"><div class="ag-l">' + cartaoHoje() + cartaoDia() + '</div><div class="ag-c">' + calendario() + proximos() + '</div>' + cadeiras() + '</div>';
+    ajustar();
+  }
+
+  // no computador, a agenda ocupa exatamente a janela (como a agenda pessoal)
+  function ajustar(){
+    var g = document.querySelector(".ag-grid"); if(!g) return;
+    if(innerWidth < 1100 || innerHeight < 640 || el("agenda").hidden){ g.style.height = ""; document.body.classList.remove("ag-fit"); return; }
+    document.body.classList.add("ag-fit");
+    var top = g.getBoundingClientRect().top + scrollY;
+    g.style.height = Math.max(560, innerHeight - top - 20) + "px";
+  }
+  var rt; addEventListener("resize", function(){ clearTimeout(rt); rt = setTimeout(ajustar, 120); });
+
+  function ir(k){
+    sel = k; var d = parse(k); mes = new Date(d.getFullYear(), d.getMonth(), 1); render();
+    if(innerWidth < 900){ var c = document.querySelector(".ag-dia"); if(c) c.scrollIntoView({ behavior:"smooth", block:"nearest" }); }
+  }
+
+  function aplicarModo(){
+    var ag = modo === "agenda";
+    el("agenda").hidden = !ag; el("listaModo").hidden = ag;
+    var tg = document.querySelector("#view-aval > .avmode"); if(tg) tg.hidden = ag;
+    document.body.classList.toggle("ag-on", ag && !el("view-aval").hidden);
+    document.querySelectorAll(".avmode button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.m === modo)); });
+    if(ag) render(); else ajustar();
+  }
+
+  document.addEventListener("click", function(ev){
+    var b = ev.target.closest(".avmode button");
+    if(b){ modo = b.dataset.m; try{ localStorage.setItem("lei-aval-modo", modo); }catch(e){} aplicarModo(); return; }
+    if(!ev.target.closest("#agenda")) return;
+    var nv = ev.target.closest("[data-nav]");
+    if(nv){ var v = nv.dataset.nav; if(v === "hoje"){ ir(key(midnight())); } else { mes = new Date(mes.getFullYear(), mes.getMonth() + Number(v), 1); render(); } return; }
+    var t = ev.target.closest("[data-d]"); if(t && !ev.target.closest("a")) ir(t.dataset.d);
+  });
+  // ao trocar de separador, a página só alarga na Agenda
+  document.querySelector(".tabs").addEventListener("click", function(){ setTimeout(aplicarModo, 0); });
+  addEventListener("hashchange", function(){ setTimeout(aplicarModo, 0); });
+
+  // sempre que o calendário muda (folha do Drive), a agenda acompanha
+  var _ra = renderAll;
+  renderAll = function(){ _ra(); if(modo === "agenda") render(); };
+  // muda de dia à meia-noite sem recarregar
+  setInterval(function(){ if(key(midnight()) !== key(hoje)){ if(sel === key(hoje)) sel = key(midnight()); render(); } }, 60000);
+
+  aplicarModo();
+  return { render: render, ir: ir };
 })();
 </script>
 
