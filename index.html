@@ -439,6 +439,41 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
   .eve-d b{font-size:21px}
   .eve-head h2{font-size:21px}
 }
+/* Biblioteca e Eventos a ocupar o ecrã todo no computador (como a agenda) */
+@media (min-width:1100px){
+  body.larga .wrap{max-width:none;display:grid;grid-template-columns:1fr auto;gap:16px 20px;align-items:center}
+  body.larga .wrap>*{grid-column:1/-1}
+  body.larga .wrap>header{grid-column:1;gap:16px}
+  body.larga .wrap>.navrow{grid-column:2;gap:10px}
+  body.larga .badge{width:68px;height:68px;padding:3px}
+  body.larga .badge img{width:62px;height:62px}
+  body.larga h1{font-size:38px}
+  body.larga .htxt{gap:8px}
+  body.larga .ucgrid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  body.larga .tk-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+}
+/* cadeiras da biblioteca: blocos com símbolo em cima, centrados */
+.ucgrid{display:flex!important;flex-wrap:wrap;justify-content:center;gap:12px!important}
+.uccard{--n:4;flex:0 0 calc((100% - (var(--n) - 1) * 12px) / var(--n));align-items:center!important;text-align:center;gap:4px!important;padding:20px 14px 18px!important;border-top:1px solid var(--line)!important;position:relative;overflow:hidden}
+.uccard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c)}
+.uccard:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.22)}
+.ucsig{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);margin-bottom:10px;transition:transform .2s}
+.ucsig svg{width:32px;height:32px}
+.uccard:hover .ucsig{transform:scale(1.06) rotate(-3deg)}
+.uccard b{font-size:17px!important}
+.uccard>strong{color:var(--c);font-weight:700;font-size:14px}
+.uccard>span{font-size:12.5px!important}
+.ucnew{position:absolute;top:12px;right:12px;background:var(--danger);border-radius:999px;padding:2px 8px;font-size:11px!important;color:#fff!important}
+@media (min-width:1100px){body.larga .uccard{--n:7}}
+@media (max-width:760px){
+  .ucgrid{gap:8px!important}
+  .uccard{--n:3;padding:14px 6px 12px!important}
+  .ucsig{width:48px;height:48px;border-radius:14px;margin-bottom:6px}
+  .ucsig svg{width:24px;height:24px}
+  .uccard b{font-size:13.5px!important;line-height:1.2}
+  .uccard>strong{font-size:12.5px}
+  .uccard>span{display:none}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- vista Agenda ---------- */
@@ -988,6 +1023,7 @@ function showView(v){
   document.getElementById("view-aval").hidden = v!=="aval";
   document.getElementById("view-lib").hidden = v!=="lib";
   document.getElementById("view-eve").hidden = v!=="eve";
+  document.body.classList.toggle("larga", v!=="aval");
   if(window.Lib) Lib.badge();
   if(v==="lib") Lib.open();
   if(window.Eve) Eve.abrir(v==="eve");
@@ -996,6 +1032,7 @@ document.querySelector(".tabs").addEventListener("click", ev=>{
   const t = ev.target.closest(".tab"); if(!t) return;
   history.replaceState(null, "", t.dataset.v==="lib" ? "#biblioteca" : t.dataset.v==="eve" ? "#eventos" : location.pathname + location.search);
   showView(t.dataset.v);
+  dispatchEvent(new HashChangeEvent("hashchange"));   // a agenda volta a ajustar-se ao ecrã
 });
 function vistaDoHash(){ return location.hash==="#biblioteca" ? "lib" : location.hash==="#eventos" ? "eve" : "aval"; }
 addEventListener("hashchange", ()=>showView(vistaDoHash()));
@@ -1006,6 +1043,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxUzHT8bdxqZyRX2a_45t1Y
 
 const Lib = (()=>{
   const LUC = Object.assign({}, UC, { ger:{s:"Geral", n:"Geral (horários, regulamentos…)", c:"--muted"} });
+  const UCICON = {
+    alg:'<path d="M6 4H4v16h2M18 4h2v16h-2"/><circle cx="9" cy="9" r=".9" fill="currentColor"/><circle cx="15" cy="9" r=".9" fill="currentColor"/><circle cx="9" cy="15" r=".9" fill="currentColor"/><circle cx="15" cy="15" r=".9" fill="currentColor"/>',
+    mat:'<path d="M15.5 4.5c-1-1-3.5-.8-3.8 1.8L10.3 18c-.3 2.4-2.6 2.6-3.6 1.6"/><path d="M15 12h4M17 10v4"/>',
+    fbd:'<ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v13c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-13"/><path d="M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>',
+    fp:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/>',
+    fis:'<circle cx="12" cy="12" r="1.6" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.6"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)"/>',
+    ac:'<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx=".8"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/>',
+    ger:'<path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/>'
+  };
   const TIPOS = { testes:"Testes anteriores", exerc:"Exercícios e resoluções", slides:"Slides e apontamentos", resumos:"Resumos", outros:"Outros" };
   const MAX = 25*1024*1024;
   // tem de coincidir com EXT_PERMITIDAS no script
@@ -1218,7 +1264,9 @@ const Lib = (()=>{
         const fs = by[k] || [];
         const nn = fs.filter(isNewF).length;
         const sub = fs.length ? `<strong>${plural(fs.length,"ficheiro","ficheiros")}</strong> · último a ${dstr(fs[0].data)}` : "ainda sem ficheiros";
-        return `<button class="uccard" type="button" data-uc="${k}" style="--c:${lc(k)}"><b>${esc(LUC[k].s)}${nn ? ` <span class="newtag">${nn} ${nn===1?"novo":"novos"}</span>` : ""}</b><span>${sub}</span></button>`;
+        const ic = UCICON[k] || UCICON.ger;
+        const n = fs.length, ult = n ? `último a ${dstr(fs[0].data)}` : "ainda sem ficheiros";
+        return `<button class="uccard" type="button" data-uc="${k}" style="--c:${lc(k)}"><i class="ucsig" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></i>${nn ? `<span class="newtag ucnew">${nn} ${nn===1?"novo":"novos"}</span>` : ""}<b>${esc(LUC[k].s)}</b><strong>${n ? plural(n,"ficheiro","ficheiros") : "vazio"}</strong><span>${ult}</span></button>`;
       }).join("") + `</div>` + (files.length ? "" : `<p class="libempty">A biblioteca ainda está vazia. Usa “Adicionar” para pôr lá o primeiro ficheiro.</p>`);
       return;
     }
