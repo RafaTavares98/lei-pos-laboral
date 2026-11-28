@@ -504,7 +504,7 @@ body.ag-fit .ag-chips span{-webkit-line-clamp:2}
 .fresh .ok svg{width:13px;height:13px}
 .fresh b{color:var(--ink);font-weight:600}
 .fresh .sep{color:var(--line)}
-@media (max-width:560px){.fresh{border-radius:14px;font-size:13px;gap:2px 8px}.fresh .sep{display:none}.fresh>span:last-child{flex-basis:100%;padding-left:30px}}
+@media (max-width:560px){.fresh{border-radius:14px;font-size:13px;gap:2px 8px}.fresh .sep{display:none}}
 
 /* ---------- Natal ---------- */
 :root[data-season="natal"]{--title-a:#C62D35;--title-b:#C08A12;--season-ink:#B3262E;--season-soft:rgba(198,45,53,.10);--bg:#FBF7F3;--bg-glow1:rgba(198,45,53,.11);--bg-glow2:rgba(31,122,77,.10)}
@@ -656,7 +656,12 @@ const EMBED = EVENTS.slice();
 function fixTags(e){ if(!e.tags || !e.tags.length) return e; const t = []; e.tags.forEach(g=>{ const p = t[t.length-1]; if(p && /\d$/.test(p) && /^\d+$/.test(g)) t[t.length-1] = p + "," + g; else t.push(g); }); return Object.assign({}, e, { tags: t }); }
 // datas antigas que já não existem: nunca aparecem, venham de onde vierem (cópias guardadas, folha antiga)
 const REMOVIDAS = ["alg|2026-12-02", "fbd|2027-02-05"];
-function mergeEv(a, b){ const m = new Map(); a.concat(b).map(fixTags).filter(e=>REMOVIDAS.indexOf(e.uc+"|"+e.d)===-1).forEach(e=>m.set([e.uc,e.d,e.t].join("|"), e)); return Array.from(m.values()).sort((x,y)=>(x.d+(x.s||"")).localeCompare(y.d+(y.s||""))); }
+function mergeEv(a, b){ const m = new Map(); a.concat(b).map(fixTags).filter(e=>REMOVIDAS.indexOf(e.uc+"|"+e.d)===-1).forEach(e=>m.set([e.uc,e.d,e.t].join("|"), e)); return Array.from(m.values()).map(notaEv).sort((x,y)=>(x.d+(x.s||"")).localeCompare(y.d+(y.s||""))); }
+/* avaliações formativas: acrescenta "(não conta para nota)" ao título mostrado */
+function notaEv(e){
+  const formativo = (e.tags||[]).some(t=>/formativ/i.test(t)) || /n[ãa]o conta para (a )?nota/i.test(e.x||"");
+  return (formativo && !/n[ãa]o conta/i.test(e.t)) ? Object.assign({}, e, {t0: e.t, t: e.t + " (não conta para nota)"}) : e;
+}
 EVENTS = mergeEv(EMBED, []);
 try{ const c = JSON.parse(localStorage.getItem("lei-cal") || "null"); if(c && Array.isArray(c.eventos)) EVENTS = mergeEv(EMBED, c.eventos); }catch(e){}
 PENDING = Object.keys(UC).filter(k=>!EVENTS.some(e=>e.uc===k));
@@ -795,7 +800,7 @@ renderAll();
 
 /* ================= novidades desde a última visita ================= */
 var NEW_EV; // sem valor inicial: o calendário (mais acima) já pode tê-lo preenchido
-function evKey(e){ return [e.uc, e.d, e.s||"", e.t].join("|"); }
+function evKey(e){ return [e.uc, e.d, e.s||"", e.t0||e.t].join("|"); }
 var SEEN_PREV; // o que esta pessoa já tinha visto antes desta visita (lido uma vez)
 function initSeen(){
   if(SEEN_PREV === undefined){ try{ SEEN_PREV = JSON.parse(localStorage.getItem("lei-seen-ev") || "null"); }catch(e){ SEEN_PREV = null; } }
@@ -1543,8 +1548,7 @@ function renderFresh(iso){
   const el = document.getElementById("fresh"); if(!el) return;
   const d = iso ? new Date(iso) : null, c = parse(MOODLE_CONFERIDO);
   el.innerHTML = '<span class="ok"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg></span>' +
-    (d && !isNaN(d) ? '<span>Datas atualizadas <b>' + quandoTxt(d) + '</b></span><span class="sep">·</span>' : '') +
-    '<span>conferidas com o Moodle a <b>' + c.getDate() + ' ' + MON[c.getMonth()] + '</b></span>';
+    '<span>Datas conferidas <b>diariamente</b> com o Moodle</span>';
   el.hidden = false;
   el.dataset.iso = iso || "";
 }
@@ -1656,7 +1660,7 @@ const Agenda = (function(){
     var falta = Math.max(0, Math.round((SEM_END - hoje) / 864e5));
     var ticks = evs().map(function(e){ var d = parse(e.d); return '<button class="ag-tick" type="button" data-d="' + e.d + '" style="left:' + pos(d) + '%;--c:' + col(e.uc) + '" title="' + d.getDate() + ' ' + MON[d.getMonth()] + ' · ' + esc(UC[e.uc].n) + ': ' + esc(e.t) + '" aria-label="' + d.getDate() + ' ' + MON[d.getMonth()] + ', ' + esc(UC[e.uc].n) + '"></button>'; }).join("");
     return '<div class="ag-top ag-card">' +
-      '<div class="ag-tt"><span class="ag-mono">turma@lei:~$ ./agenda</span><b>Agenda da turma</b></div>' +
+      '<div class="ag-tt"><b>Agenda da turma</b></div>' +
       '<div class="ag-sem"><div class="ag-semh"><span><b>1.º semestre · semana ' + wk + ' de ' + wkT + '</b> · LEI pós-laboral</span><span class="ag-mono">' + Math.round(tp) + '% · faltam ' + falta + ' dias</span></div>' +
       '<div class="ag-bar"><i style="width:' + tp + '%"></i>' + ticks + '</div></div>' +
       '<div class="avmode" role="group" aria-label="Vista das avaliações"><button type="button" data-m="agenda" aria-pressed="true">Agenda</button><button type="button" data-m="lista" aria-pressed="false">Lista</button></div></div>';
