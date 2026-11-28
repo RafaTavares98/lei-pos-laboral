@@ -384,6 +384,51 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
 .eve.isla{background:linear-gradient(0deg,var(--accent-soft),var(--accent-soft)),var(--surface);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
 .eve-isla{background:var(--accent)!important;color:var(--on-accent)!important}
 .eve-ext{background:var(--surface-3)!important;color:var(--muted)!important}
+/* bilhetes de eventos */
+.tk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:12px}
+.tk,.tk-hero{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s}
+.tk:hover,.tk-hero:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.tk-top{position:relative;min-height:104px;padding:14px 16px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.tk-top::after,.tk-hero-l::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
+.tk-ic{position:absolute;left:14px;top:12px;font-size:22px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.tk-ic.big{position:static;font-size:30px;margin-top:auto}
+.tk-cd{position:absolute;right:12px;top:12px;z-index:1;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.22);color:#fff;backdrop-filter:blur(4px)}
+.tk-date{position:relative;z-index:1;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.tk-date b{font:800 30px/1 var(--display);letter-spacing:-.02em}
+.tk-date span{font-size:13px;font-weight:600;opacity:.92}
+.tk-body{position:relative;flex:1;display:flex;flex-direction:column;gap:7px;padding:14px 16px 16px;border-top:2px dashed var(--line)}
+.tk-body::before,.tk-body::after{content:"";position:absolute;top:-10px;width:18px;height:18px;border-radius:50%;background:var(--bg)}
+.tk-body::before{left:-10px}.tk-body::after{right:-10px}
+.tk-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tk-tag{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.tk-tag.isla{background:var(--accent);color:var(--on-accent)}
+.tk-tag.star{background:color-mix(in srgb,var(--g1) 85%,#fff 0%);color:#fff}
+.tk h3,.tk-hero h3{margin:0;font:700 17px/1.25 var(--display);color:var(--ink)}
+.tk-loc{font-size:13px;color:var(--muted)}
+.tk p,.tk-hero p{margin:0;font-size:13.5px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tk-prazo{align-self:flex-start;font-size:12.5px;font-weight:700;color:var(--danger);background:color-mix(in srgb,var(--danger) 13%,transparent);border-radius:8px;padding:5px 9px}
+.tk-acoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.tk-hero{flex-direction:row;margin-bottom:6px}
+.tk-hero-l{position:relative;flex:0 0 230px;padding:18px 20px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.tk-hero-l .tk-cd{position:static;align-self:flex-start}
+.tk-kicker{font-size:12px;font-weight:700;letter-spacing:.02em;opacity:.9}
+.tk-date.big b{font-size:44px}
+.tk-hero .tk-body{border-top:0;border-left:2px dashed var(--line);padding:18px 20px}
+.tk-hero .tk-body::before{top:-10px;left:-10px}.tk-hero .tk-body::after{top:auto;bottom:-10px;left:-10px;right:auto}
+.tk-hero h3{font-size:21px}
+.tk-hero p{-webkit-line-clamp:4}
+@media (max-width:640px){
+  .tk-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-inline:-16px;padding:2px 16px 10px;scrollbar-width:none}
+  .tk-grid::-webkit-scrollbar{display:none}
+  .tk-grid .tk{flex:0 0 82%;scroll-snap-align:start}
+  .tk-hero{flex-direction:column}
+  .tk-hero-l{flex:none;flex-direction:row;flex-wrap:wrap;align-items:flex-end;gap:6px 12px}
+  .tk-hero-l .tk-kicker{flex-basis:100%}
+  .tk-hero-l .tk-ic.big{margin:0 0 0 auto}
+  .tk-date.big b{font-size:36px}
+  .tk-hero .tk-body{border-left:0;border-top:2px dashed var(--line)}
+  .tk-hero .tk-body::before{top:-10px;left:-10px}.tk-hero .tk-body::after{top:-10px;bottom:auto;right:-10px;left:auto}
+}
 .eve-vazio{text-align:center;color:var(--muted);padding:34px 16px;border:1px dashed var(--line);border-radius:14px}
 .eve-nota{margin:2px 4px 0;color:var(--muted);font-size:12.5px;text-align:center}
 @media (max-width:560px){
@@ -1651,24 +1696,42 @@ window.Eve = (function(){
       "DESCRIPTION:" + String(e.x || "").replace(/\n/g, " "), "END:VEVENT","END:VCALENDAR"].join("\r\n");
     return "data:text/calendar;charset=utf-8," + encodeURIComponent(txt);
   }
-  function cartao(e){
-    const isla = e.cat === "isla", [nome, cor] = CAT[e.cat] || CAT.conf;
-    const prazo = e.prazo && dia(e.prazo) >= hoje0() ? `<span class="eve-prazo">Inscrições até ${dia(e.prazo).getDate()} ${MON[dia(e.prazo).getMonth()]} · ${falta(e.prazo)}</span>` : "";
-    const tag = isla ? `<span class="eve-tag eve-isla">🏫 ISLA Gaia</span>` : `<span class="eve-tag eve-ext">Externo</span><span class="eve-tag">${nome}</span>`;
-    return `<article class="eve${isla ? " isla" : ""}${e.top ? " top" : ""}" style="--c:${cor}">
-      <div class="eve-d">${dataBloco(e)}</div>
-      <div class="eve-b"><div class="eve-k">${tag}${e.top ? `<span class="eve-star">★ ${esc(e.top)}</span>` : ""}<span>📍 ${esc(e.local || "")}</span></div>
-      <h3>${esc(e.t)}</h3>${e.x ? `<p>${esc(e.x)}</p>` : ""}${prazo}
-      <div class="eve-acoes">${e.link ? `<a class="eve-a pri" href="${esc(e.link)}" target="_blank" rel="noopener">Site oficial ↗</a>` : ""}${e.semData ? "" : `<a class="eve-a" href="${ics(e)}" download="${esc(e.id)}.ics">+ Calendário</a>`}</div></div></article>`;
+  const GRAD = { isla:["#0B7F8A","#22B3AC","🏫"], conf:["#5236D6","#8C6BF0","🎤"], hack:["#D45A26","#F2A13E","💻"], carreira:["#1C8350","#47B97B","💼"] };
+  function quando(e){
+    const h = hoje0(), a = dia(e.d), b = e.fim ? dia(e.fim) : a;
+    if(e.semData) return "data a anunciar";
+    if(a <= h && h <= b) return "a decorrer";
+    const n = Math.round((a - h) / 864e5);
+    return n === 0 ? "hoje" : n === 1 ? "amanhã" : n <= 45 ? "daqui a " + n + " dias" : "daqui a " + Math.round(n / 30.4) + " meses";
   }
-  function porMes(arr){
-    let mesAtual = "", h = "";
-    arr.forEach(e => {
-      const d = dia(e.d), mes = e.semData ? "Data por anunciar" : MESES[d.getMonth()].replace(/^./, c => c.toUpperCase()) + " " + d.getFullYear();
-      if(mes !== mesAtual){ h += `<h4 class="eve-mes">${mes}</h4>`; mesAtual = mes; }
-      h += cartao(e);
-    });
-    return h;
+  function dataTxt(e){
+    if(e.semData) return [String(dia(e.d).getFullYear()), "data a anunciar"];
+    const a = dia(e.d), b = e.fim ? dia(e.fim) : null, ano = " " + a.getFullYear();
+    if(b && a.getMonth() !== b.getMonth()) return [a.getDate() + "–" + b.getDate(), MON[a.getMonth()] + "–" + MON[b.getMonth()] + ano];
+    return [a.getDate() + (b ? "–" + b.getDate() : ""), MESES[a.getMonth()].replace(/^./, c => c.toUpperCase()) + ano];
+  }
+  function partes(e){
+    const isla = e.cat === "isla", [nome] = CAT[e.cat] || CAT.conf, g = GRAD[e.cat] || GRAD.conf;
+    const prazo = e.prazo && dia(e.prazo) >= hoje0() ? `<span class="tk-prazo">⏰ Inscrições até ${dia(e.prazo).getDate()} ${MON[dia(e.prazo).getMonth()]} · ${falta(e.prazo)}</span>` : "";
+    const tags = (isla ? `<span class="tk-tag isla">ISLA Gaia</span>` : `<span class="tk-tag">Externo · ${nome}</span>`) + (e.top ? `<span class="tk-tag star">★ ${esc(e.top)}</span>` : "");
+    const acoes = `<div class="tk-acoes">${e.link ? `<a class="eve-a pri" href="${esc(e.link)}" target="_blank" rel="noopener">Saber mais ↗</a>` : ""}${e.semData ? "" : `<a class="eve-a" href="${ics(e)}" download="${esc(e.id)}.ics" title="Adicionar ao calendário">📅 Guardar</a>`}</div>`;
+    const [dd, mm] = dataTxt(e);
+    return { g, tags, prazo, acoes, dd, mm };
+  }
+  function cartao(e){
+    const p = partes(e);
+    return `<article class="tk" style="--g1:${p.g[0]};--g2:${p.g[1]}">
+      <div class="tk-top"><span class="tk-ic">${p.g[2]}</span><span class="tk-cd">${quando(e)}</span>
+        <div class="tk-date"><b>${p.dd}</b><span>${p.mm}</span></div></div>
+      <div class="tk-body"><div class="tk-tags">${p.tags}</div><h3>${esc(e.t)}</h3><div class="tk-loc">📍 ${esc(e.local || "")}</div>
+        ${e.x ? `<p>${esc(e.x)}</p>` : ""}${p.prazo}${p.acoes}</div></article>`;
+  }
+  function destaque(e){
+    const p = partes(e);
+    return `<article class="tk-hero" style="--g1:${p.g[0]};--g2:${p.g[1]}">
+      <div class="tk-hero-l"><span class="tk-kicker">Próximo evento</span><div class="tk-date big"><b>${p.dd}</b><span>${p.mm}</span></div><span class="tk-cd">${quando(e)}</span><span class="tk-ic big">${p.g[2]}</span></div>
+      <div class="tk-body"><div class="tk-tags">${p.tags}</div><h3>${esc(e.t)}</h3><div class="tk-loc">📍 ${esc(e.local || "")}</div>
+        ${e.x ? `<p>${esc(e.x)}</p>` : ""}${p.prazo}${p.acoes}</div></article>`;
   }
   function render(){
     const box = document.getElementById("eveList"), fb = document.getElementById("eveF"); if(!box) return;
@@ -1676,11 +1739,13 @@ window.Eve = (function(){
     const cont = { todos:fut.length, isla:isla.length, ext:ext.length };
     fb.innerHTML = [["todos","Todos"],["isla","🏫 ISLA Gaia"],["ext","Externos"]]
       .map(([k, n]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${filtro === k}">${n} <b>${cont[k]}</b></button>`).join("");
-    let h = "";
-    if(filtro !== "ext") h += `<section class="eve-sec sec-isla"><div class="eve-sec-h"><span class="eve-sec-i">🏫</span><div><h3>No ISLA Gaia</h3><p>Eventos da nossa escola</p></div><b>${isla.length}</b></div>` +
-      (isla.length ? porMes(isla) : `<div class="eve-vazio">Sem eventos do ISLA anunciados por agora.</div>`) + `</section>`;
-    if(filtro !== "isla") h += `<section class="eve-sec sec-ext"><div class="eve-sec-h"><span class="eve-sec-i">🇵🇹</span><div><h3>Externos</h3><p>Conferências e hackathons de tecnologia em Portugal</p></div><b>${ext.length}</b></div>` +
-      (ext.length ? porMes(ext) : `<div class="eve-vazio">Sem eventos externos por agora.</div>`) + `</section>`;
+    const hero = filtro === "todos" ? fut.find(e => !e.semData) : null;
+    const sem = arr => arr.filter(e => e !== hero);
+    let h = hero ? destaque(hero) : "";
+    const sec = (cls, ic, tit, sub, arr, vazio) => `<section class="eve-sec ${cls}"><div class="eve-sec-h"><span class="eve-sec-i">${ic}</span><div><h3>${tit}</h3><p>${sub}</p></div><b>${arr.length}</b></div>` +
+      (arr.length ? `<div class="tk-grid">${arr.map(cartao).join("")}</div>` : `<div class="eve-vazio">${vazio}</div>`) + `</section>`;
+    if(filtro !== "ext") h += sec("sec-isla", "🏫", "No ISLA Gaia", "Eventos da nossa escola", sem(isla), hero && hero.cat === "isla" && !sem(isla).length ? "O próximo evento do ISLA está em destaque acima." : "Sem eventos do ISLA anunciados por agora.");
+    if(filtro !== "isla") h += sec("sec-ext", "🇵🇹", "Externos", "Conferências e hackathons de tecnologia em Portugal", sem(ext), "Sem eventos externos por agora.");
     box.innerHTML = h;
   }
   function badge(){
