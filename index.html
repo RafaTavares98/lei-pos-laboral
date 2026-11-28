@@ -15,8 +15,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>try{var t=localStorage.getItem("lei-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <script>(function(){var q=new URLSearchParams(location.search).get("estacao");var d=new Date(),k=(d.getMonth()+1)*100+d.getDate();
-var e=(k>=321&&k<=620)?"primavera":(k>=621&&k<=922)?"verao":(k>=923&&k<=1220)?"outono":"inverno";
-if(["primavera","verao","outono","inverno"].indexOf(q)>=0)e=q;if(q==="normal")e="";
+var e=(k>=1128||k<=106)?"natal":(k>=321&&k<=620)?"primavera":(k>=621&&k<=922)?"verao":(k>=923&&k<=1220)?"outono":"inverno";
+if(["primavera","verao","outono","inverno","natal"].indexOf(q)>=0)e=q;if(q==="normal")e="";
 if(e)document.documentElement.dataset.season=e;})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -339,6 +339,13 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
 footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
+:root[data-season="natal"] body{padding-top:54px}
+@media (min-width:901px){:root[data-season="natal"] body{padding-top:78px;padding-inline:70px;padding-bottom:84px}}
+#luzes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#luzes i{position:absolute;width:7px;height:11px;margin-left:-3.5px;transform-origin:50% 0;border-radius:50% 50% 50% 50%/38% 38% 62% 62%;background:var(--c);
+  box-shadow:0 0 5px 1px var(--c),0 0 14px 4px color-mix(in srgb,var(--c) 40%,transparent);animation:pisca var(--d) ease-in-out var(--a) infinite alternate}
+#luzes i::before{content:"";position:absolute;left:1.5px;top:-3px;width:4px;height:4px;border-radius:1px;background:#2E3530}
+@keyframes pisca{0%{opacity:.28;filter:saturate(.7)}60%{opacity:1}100%{opacity:1;filter:brightness(1.15)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- vista Agenda ---------- */
@@ -498,6 +505,11 @@ body.ag-fit .ag-chips span{-webkit-line-clamp:2}
 .fresh b{color:var(--ink);font-weight:600}
 .fresh .sep{color:var(--line)}
 @media (max-width:560px){.fresh{border-radius:14px;font-size:13px;gap:2px 8px}.fresh .sep{display:none}.fresh>span:last-child{flex-basis:100%;padding-left:30px}}
+
+/* ---------- Natal ---------- */
+:root[data-season="natal"]{--title-a:#C62D35;--title-b:#C08A12;--season-ink:#B3262E;--season-soft:rgba(198,45,53,.10);--bg:#FBF7F3;--bg-glow1:rgba(198,45,53,.11);--bg-glow2:rgba(31,122,77,.10)}
+@media (prefers-color-scheme:dark){:root[data-season="natal"]:not([data-theme="light"]){--title-a:#F0646A;--title-b:#F2C25A;--season-ink:#F49A9A;--season-soft:rgba(242,124,124,.14);--bg:#121620;--bg-glow1:rgba(230,90,90,.14);--bg-glow2:rgba(80,190,130,.09)}}
+:root[data-season="natal"][data-theme="dark"]{--title-a:#F0646A;--title-b:#F2C25A;--season-ink:#F49A9A;--season-soft:rgba(242,124,124,.14);--bg:#121620;--bg-glow1:rgba(230,90,90,.14);--bg-glow2:rgba(80,190,130,.09)}
 </style>
 </head>
 <body>
@@ -1141,7 +1153,7 @@ setTimeout(Lib.prefetch, 300);
 (function(){
   const est = document.documentElement.dataset.season || "";
   const pill = document.getElementById("seasonPill");
-  const NOMES = { primavera: "🌸 Primavera", verao: "☀️ Verão", outono: "🍂 Outono", inverno: "❄️ Inverno" };
+  const NOMES = { primavera: "🌸 Primavera", verao: "☀️ Verão", outono: "🍂 Outono", inverno: "❄️ Inverno", natal: "🎄 Natal" };
   if(pill && NOMES[est]){ pill.textContent = NOMES[est]; pill.hidden = false; }
 
   const c = document.getElementById("sky"), x = c.getContext("2d");
@@ -1219,6 +1231,7 @@ setTimeout(Lib.prefetch, 300);
     c.style.height = H + "px";
     c.width = W * r; c.height = H * r; x.setTransform(r, 0, 0, r, 0, 0); x.clearRect(0, 0, W, H);
     const dark = Theme.current() === "dark";
+    let luzesHTML = ""; const velho = document.getElementById("luzes"); if(velho) velho.remove();
     if(dark){
       const R = rng(7), n = Math.round(W * H / 14000);
       for(let i = 0; i < n; i++){
@@ -1280,6 +1293,178 @@ setTimeout(Lib.prefetch, 300);
         (R() < .6 ? acer : oval)(px, py, s, R() * 6.283, cor);
       });
       x.globalAlpha = 1;
+    }
+    if(est === "natal"){
+      // moldura de Natal: grinalda de pinheiro à volta do ecrã com bolas, laços, azevinho, bengalas, presente e velas
+      const R = rng(1225), pcN = W > 900, Hv = Math.min(H, window.innerHeight || H);
+      const T = pcN ? 44 : 32, k = pcN ? 1 : .72;
+      const pal = dark
+        ? [["#173B2E", "#1A4334", "#143428"], ["#24563F", "#2A5F47", "#214F3A"], ["#3B7258", "#457D62", "#52896D"]]
+        : [["#2B5A45", "#30634C", "#27523F"], ["#3F7A5E", "#468466", "#3A7056"], ["#609B7E", "#6CA688", "#79B192"]];
+      const paths = pal.map(l => l.map(() => new Path2D())), caules = new Path2D();
+      const ramo = (layer, px, py, L, ang) => {
+        const ca = Math.cos(ang), sa = Math.sin(ang), cv = (R() - .5) * .2 * L;
+        const P = (u, v) => [px + u * ca - v * sa, py + u * sa + v * ca];
+        caules.moveTo(px, py);
+        for(let j = 1; j <= 5; j++){ const t = j / 5, q = P(t * L, cv * 4 * t * (1 - t)); caules.lineTo(q[0], q[1]); }
+        const n = Math.max(6, Math.round(L / (pcN ? 2.4 : 2.1)));
+        for(let i = 0; i < n; i++){
+          const t = .04 + .96 * i / n, su = t * L, sv = cv * 4 * t * (1 - t), len = L * (.26 - .13 * t) * (.85 + R() * .3);
+          for(const lado of [-1, 1]){
+            const an = lado * (.7 + R() * .45), s1 = P(su, sv), e1 = P(su + Math.cos(an) * len, sv + Math.sin(an) * len);
+            const p = paths[layer][Math.floor(R() * 3)]; p.moveTo(s1[0], s1[1]); p.lineTo(e1[0], e1[1]);
+          }
+        }
+      };
+      const borda = (x0, y0, x1, y1, nAng) => {
+        const comp = Math.hypot(x1 - x0, y1 - y0), nx = Math.cos(nAng), ny = Math.sin(nAng);
+        [[0, 9, 1], [1, 10, .8], [2, 14, .58]].forEach(([layer, passo, f]) => {
+          for(let d = -T * .5; d < comp + T * .5; d += passo * (.7 + R() * .6)){
+            const t = d / comp, dep = R() * T * .42 - T * .06;
+            const px = x0 + (x1 - x0) * t + nx * dep, py = y0 + (y1 - y0) * t + ny * dep;
+            ramo(layer, px, py, T * f * (.7 + R() * .5), nAng + (R() - .5) * 2.7);
+          }
+        });
+      };
+      if(pcN){ borda(0, 0, W, 0, Math.PI / 2); borda(0, Hv, W, Hv, -Math.PI / 2); borda(0, 0, 0, Hv, 0); borda(W, 0, W, Hv, Math.PI); }
+      else { borda(0, 0, W, 0, Math.PI / 2); borda(0, 0, 0, T * 2.2, 0); borda(W, 0, W, T * 2.2, Math.PI); }
+      x.globalAlpha = 1; x.lineCap = "round";
+      x.strokeStyle = dark ? "#3B2D22" : "#5A4332"; x.lineWidth = 1.6 * k; x.stroke(caules);
+      paths.forEach((camada, layer) => camada.forEach((p, i) => { x.strokeStyle = pal[layer][i]; x.lineWidth = [1.9, 1.6, 1.3][layer] * k; x.stroke(p); }));
+
+      // ---------- fio de luzes (o fio é desenhado aqui; as lâmpadas são elementos que piscam, em #luzes) ----------
+      const fio = new Path2D(), lamp = [];
+      const festao = (x0, y0, x1, y1, nAng, S, sag, gap) => {
+        const comp = Math.hypot(x1 - x0, y1 - y0), nx = Math.cos(nAng), ny = Math.sin(nAng), n = Math.max(1, Math.round(comp / S)), seg = comp / n;
+        const pos = (i, u) => { const t = (i + u) * seg / comp, off = T * .42 + sag * Math.sin(Math.PI * u); return [x0 + (x1 - x0) * t + nx * off, y0 + (y1 - y0) * t + ny * off]; };
+        for(let i = 0; i < n; i++){
+          for(let j = 0; j <= 30; j++){ const p = pos(i, j / 30); (i === 0 && j === 0) ? fio.moveTo(p[0], p[1]) : fio.lineTo(p[0], p[1]); }
+          const nb = Math.max(2, Math.round(seg / gap));
+          for(let b = 0; b < nb; b++){
+            const u = (b + .5) / nb, p = pos(i, u), q = pos(i, Math.min(1, u + .01)), tg = Math.atan2(q[1] - p[1], q[0] - p[0]);
+            let ang = tg + Math.PI / 2; if(Math.cos(ang - nAng) < 0) ang += Math.PI;   // pendurada para dentro do ecrã
+            lamp.push([p[0], p[1], (ang - Math.PI / 2) * 180 / Math.PI]);
+          }
+        }
+      };
+      if(pcN){
+        festao(0, 0, W, 0, Math.PI / 2, 190, 34, 44);
+        festao(0, 0, 0, Hv, 0, 170, 22, 48);
+        festao(W, 0, W, Hv, Math.PI, 170, 22, 48);
+        festao(0, Hv, W, Hv, -Math.PI / 2, 190, 18, 48);
+      } else {
+        festao(0, 0, W, 0, Math.PI / 2, W / 3, 22, 26);
+      }
+      x.strokeStyle = dark ? "rgba(20,26,22,.9)" : "rgba(40,50,44,.75)"; x.lineWidth = 1.3; x.stroke(fio);
+      const coresLuz = ["#FFD36B", "#FF5A5F", "#7FE08A", "#6EC6FF", "#FFF3D6", "#FFB347"];
+      const R3 = rng(77);
+      luzesHTML = lamp.map(([lx, ly, rot], i) =>
+        `<i style="left:${lx.toFixed(1)}px;top:${ly.toFixed(1)}px;transform:rotate(${rot.toFixed(0)}deg);--c:${coresLuz[i % coresLuz.length]};--d:${(1.1 + R3() * 1.8).toFixed(2)}s;--a:${(-R3() * 3).toFixed(2)}s"></i>`).join("");
+      // ---------- enfeites ----------
+      const bola = (px, py, r, tipo) => {
+        const cs = { v: ["#FF8A8E", "#C81E32", "#5C0A16"], o: ["#FFF0B8", "#DDA62A", "#7A5208"], p: ["#FFFFFF", "#CDD3DC", "#5E6673"] }[tipo];
+        x.strokeStyle = "#B89545"; x.lineWidth = 1; x.beginPath(); x.moveTo(px, py - r * 1.1); x.lineTo(px + r * .1, py - r * 1.9); x.stroke();
+        x.fillStyle = "#C9A24A"; x.fillRect(px - r * .24, py - r * 1.14, r * .48, r * .28);
+        const g = x.createRadialGradient(px - r * .35, py - r * .4, r * .08, px, py, r * 1.05);
+        g.addColorStop(0, cs[0]); g.addColorStop(.5, cs[1]); g.addColorStop(1, cs[2]);
+        x.fillStyle = g; x.beginPath(); x.arc(px, py, r, 0, 6.283); x.fill();
+        x.fillStyle = "rgba(255,255,255,.75)"; x.beginPath(); x.ellipse(px - r * .38, py - r * .42, r * .2, r * .12, -.7, 0, 6.283); x.fill();
+      };
+      const laco = (px, py, s, ang, ouro) => {
+        x.save(); x.translate(px, py); x.rotate(ang); x.scale(s, s);
+        const g = x.createLinearGradient(0, -1, 0, 1);
+        g.addColorStop(0, ouro ? "#F7D774" : "#E8323F"); g.addColorStop(1, ouro ? "#B9831C" : "#8E0F1E");
+        x.fillStyle = g;
+        [-1, 1].forEach(m => {
+          x.beginPath(); x.moveTo(0, 0); x.bezierCurveTo(m * .35, -.7, m * 1.15, -.6, m * 1.05, -.02); x.bezierCurveTo(m * 1.1, .42, m * .4, .35, 0, 0); x.fill();
+          x.beginPath(); x.moveTo(m * .06, .08); x.lineTo(m * .5, .98); x.lineTo(m * .3, .88); x.lineTo(m * .2, 1.04); x.lineTo(m * -.06, .12); x.fill();
+        });
+        x.fillStyle = ouro ? "#A9741A" : "#7A0C19"; x.beginPath(); x.ellipse(0, 0, .17, .21, 0, 0, 6.283); x.fill();
+        x.globalAlpha = .35; x.strokeStyle = "#fff"; x.lineWidth = .04;
+        [-1, 1].forEach(m => { x.beginPath(); x.moveTo(m * .2, -.1); x.quadraticCurveTo(m * .6, -.45, m * .9, -.2); x.stroke(); });
+        x.globalAlpha = 1; x.restore();
+      };
+      const azevinho = (px, py, s, ang) => {
+        x.save(); x.translate(px, py); x.rotate(ang); x.scale(s, s);
+        const P = [[0,-1],[.22,-.82],[.42,-.86],[.38,-.6],[.56,-.48],[.42,-.3],[.5,-.08],[.3,.02],[.28,.25],[.12,.2],[0,.42],
+                   [-.12,.2],[-.28,.25],[-.3,.02],[-.5,-.08],[-.42,-.3],[-.56,-.48],[-.38,-.6],[-.42,-.86],[-.22,-.82]];
+        [-.9, .9, 0].forEach((r, j) => {
+          x.save(); x.rotate(r); x.translate(0, -.45);
+          const g = x.createLinearGradient(-.5, -1, .5, .4); g.addColorStop(0, "#3E8F5E"); g.addColorStop(1, "#14482D");
+          x.fillStyle = g; x.beginPath(); P.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.closePath(); x.fill();
+          x.strokeStyle = "rgba(190,235,200,.45)"; x.lineWidth = .035; x.beginPath(); x.moveTo(0, .38); x.lineTo(0, -.9); x.stroke();
+          x.restore();
+        });
+        [[0, 0], [.2, .1], [-.18, .12]].forEach(([bx, by]) => {
+          const g = x.createRadialGradient(bx - .05, by - .05, .01, bx, by, .17); g.addColorStop(0, "#FF7A7A"); g.addColorStop(1, "#A3101E");
+          x.fillStyle = g; x.beginPath(); x.arc(bx, by, .16, 0, 6.283); x.fill();
+        });
+        x.restore();
+      };
+      const bengala = (px, py, L, ang) => {
+        x.save(); x.translate(px, py); x.rotate(ang);
+        const w = L * .14, r = L * .18;
+        const cam = () => { x.beginPath(); x.moveTo(0, 0); x.lineTo(0, -L); x.arc(r, -L, r, Math.PI, 0); };
+        x.lineCap = "round"; x.lineWidth = w; x.strokeStyle = "#FAF7F2"; cam(); x.stroke();
+        x.lineCap = "butt"; x.strokeStyle = "#D0283A"; x.setLineDash([w * .8, w * .8]); cam(); x.stroke(); x.setLineDash([]);
+        x.restore();
+      };
+      const bagas = (px, py, s) => {
+        for(let i = 0; i < 5; i++){
+          const bx = px + (R() - .5) * s * 1.4, by = py + (R() - .5) * s * 1.2, r = s * (.22 + R() * .1);
+          const g = x.createRadialGradient(bx - r * .3, by - r * .3, r * .1, bx, by, r); g.addColorStop(0, "#FF6B6B"); g.addColorStop(1, "#99101C");
+          x.fillStyle = g; x.beginPath(); x.arc(bx, by, r, 0, 6.283); x.fill();
+        }
+      };
+      const vela = (px, py, w, h) => {
+        const g = x.createLinearGradient(px - w / 2, 0, px + w / 2, 0); g.addColorStop(0, "#9E1525"); g.addColorStop(.45, "#E0384A"); g.addColorStop(1, "#8A1020");
+        x.fillStyle = g; x.fillRect(px - w / 2, py - h, w, h);
+        x.fillStyle = "rgba(255,255,255,.18)"; x.fillRect(px - w / 2, py - h, w, 3);
+        const fg = x.createRadialGradient(px, py - h - w * .5, 0, px, py - h - w * .5, w * 1.8);
+        fg.addColorStop(0, "rgba(255,210,120,.55)"); fg.addColorStop(1, "rgba(255,210,120,0)");
+        x.fillStyle = fg; x.beginPath(); x.arc(px, py - h - w * .5, w * 1.8, 0, 6.283); x.fill();
+        x.fillStyle = "#FFD56A"; x.beginPath(); x.ellipse(px, py - h - w * .42, w * .17, w * .36, 0, 0, 6.283); x.fill();
+        x.fillStyle = "#FFF6D8"; x.beginPath(); x.ellipse(px, py - h - w * .34, w * .07, w * .16, 0, 0, 6.283); x.fill();
+      };
+      const presente = (px, py, w, h) => {
+        const g = x.createLinearGradient(px, py - h, px + w, py); g.addColorStop(0, "#FFFFFF"); g.addColorStop(1, "#D9D4CC");
+        x.fillStyle = g; x.fillRect(px, py - h, w, h);
+        x.fillStyle = "#EDE8E0"; x.fillRect(px - w * .05, py - h - h * .16, w * 1.1, h * .2);
+        x.fillStyle = "#D0283A"; x.fillRect(px + w * .43, py - h - h * .16, w * .14, h * 1.16); x.fillRect(px - w * .05, py - h * .62, w * 1.1, h * .13);
+        laco(px + w * .5, py - h - h * .2, w * .32, 0, false);
+      };
+      const tiposBola = ["v", "o", "o", "v", "p"];
+      const enfeitar = (x0, y0, x1, y1, nAng, passo) => {
+        const comp = Math.hypot(x1 - x0, y1 - y0), nx = Math.cos(nAng), ny = Math.sin(nAng);
+        for(let d = passo * .6; d < comp - passo * .4; d += passo * (.75 + R() * .5)){
+          const t = d / comp, dep = T * (.28 + R() * .3), px = x0 + (x1 - x0) * t + nx * dep, py = y0 + (y1 - y0) * t + ny * dep, u = R();
+          if(u < .62) bola(px, py, (pcN ? 10 : 7) + R() * (pcN ? 5 : 3), tiposBola[Math.floor(R() * tiposBola.length)]);
+          else if(u < .82) azevinho(px, py, (pcN ? 15 : 11) + R() * 3, nAng - Math.PI / 2 + (R() - .5));
+          else bagas(px, py, pcN ? 7 : 5);
+        }
+      };
+      if(pcN){
+        enfeitar(T * 3, 0, W - T * 3, 0, Math.PI / 2, 230); enfeitar(T * 3, Hv, W * .78, Hv, -Math.PI / 2, 300);
+        enfeitar(0, T * 3, 0, Hv - T * 3, 0, 280); enfeitar(W, T * 3, W, Hv - T * 3, Math.PI, 280);
+        laco(T * .85, T * .85, 22, -.6, false); laco(W - T * .85, T * .85, 22, .6, false);
+        azevinho(T * .8, Hv - T * .75, 18, .7);
+        // canto de baixo à direita: velas e presente (discretos)
+        vela(W - 168, Hv - 8, 13, 40); vela(W - 150, Hv - 5, 12, 28);
+        presente(W - 128, Hv - 6, 56, 44);
+      } else {
+        enfeitar(T * 1.8, 0, W - T * 1.8, 0, Math.PI / 2, 95);
+        laco(T * .65, T * .7, 14, -.5, false); laco(W - T * .65, T * .7, 14, .5, false);
+      }
+      // neve fina e alguns brilhos
+      const R2 = rng(2412), cn = dark ? "rgba(235,242,255,A)" : "rgba(150,170,200,A)";
+      for(let i = 0; i < (pcN ? 110 : 40); i++){
+        const r = .6 + R2() * R2() * 2.2;
+        x.fillStyle = cn.replace("A", (dark ? .15 : .22) + R2() * (dark ? .35 : .3));
+        x.beginPath(); x.arc(R2() * W, R2() * H, r, 0, 6.283); x.fill();
+      }
+      for(let i = 0; i < (pcN ? 10 : 4); i++){ x.globalAlpha = (dark ? .45 : .35) + R2() * .3; brilho(R2() * W, R2() * H, 2.5 + R2() * 3, dark ? "#F5D08A" : "#C9973A"); }
+      x.globalAlpha = 1;
+      if(luzesHTML){ const box = document.createElement("div"); box.id = "luzes"; box.setAttribute("aria-hidden", "true"); box.innerHTML = luzesHTML; c.after(box); }
     }
     if(est === "inverno"){
       const R = rng(1221), cor = dark ? "#DCE8FA" : "#8FB2DE";
