@@ -487,6 +487,8 @@ footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
 .uccard.off:hover .ucsig{transform:none}
 .uccard.off>span{font-style:italic}
 @media (min-width:1100px){body.larga .sem2g .uccard{--n:6}}
+.ucects{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);background:var(--surface-2);border-radius:999px;padding:2px 9px;margin:2px 0 4px}
+.uccard b{line-height:1.25}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- vista Agenda ---------- */
@@ -1055,6 +1057,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxUzHT8bdxqZyRX2a_45t1Y
 
 const Lib = (()=>{
   const LUC = Object.assign({}, UC, { ger:{s:"Geral", n:"Geral (horários, regulamentos…)", c:"--muted"} });
+  const SEM1 = {
+    alg:{ n:"Álgebra Linear", ects:5 }, ac:{ n:"Arquitetura de Computadores", ects:3 }, fbd:{ n:"Fundamentos de Bases de Dados", ects:6 },
+    fis:{ n:"Fundamentos de Física", ects:4 }, fp:{ n:"Fundamentos de Programação", ects:6 }, mat:{ n:"Matemática I", ects:6 }
+  };
   const SEM2 = [
     { n:"Algoritmos e Estruturas de Dados", ects:6, c:"#5B8DEF", i:'<circle cx="12" cy="5" r="2"/><circle cx="6" cy="13" r="2"/><circle cx="18" cy="13" r="2"/><circle cx="4" cy="20" r="1.6"/><circle cx="9" cy="20" r="1.6"/><path d="M10.6 6.4 7.3 11.4M13.4 6.4l3.3 5M5.3 14.8 4.4 18.4M6.8 14.8l1.6 3.6"/>' },
     { n:"Matemática II", ects:6, c:"#9B7BEA", i:'<path d="M17 5H7l6 7-6 7h10"/>' },
@@ -1280,17 +1286,18 @@ const Lib = (()=>{
 
     if(view==="home"){
       const by = {}; files.forEach(f=>{ (by[f.uc] = by[f.uc] || []).push(f); });
-      list.innerHTML = `<div class="semh"><h3>1.º ano · 1.º semestre</h3><span>${files.length ? plural(files.length,"ficheiro","ficheiros") : ""}</span></div><div class="ucgrid">` + Object.keys(LUC).map(k=>{
+      list.innerHTML = `<div class="semh"><h3>1.º ano · 1.º semestre</h3><span>${files.length ? plural(files.length,"ficheiro","ficheiros") : ""}</span></div><div class="ucgrid">` + ["alg","ac","fbd","fis","fp","mat","ger"].filter(k=>LUC[k]).map(k=>{
         const fs = by[k] || [];
         const nn = fs.filter(isNewF).length;
         const sub = fs.length ? `<strong>${plural(fs.length,"ficheiro","ficheiros")}</strong> · último a ${dstr(fs[0].data)}` : "ainda sem ficheiros";
         const ic = UCICON[k] || UCICON.ger;
         const n = fs.length, ult = n ? `último a ${dstr(fs[0].data)}` : "ainda sem ficheiros";
-        return `<button class="uccard" type="button" data-uc="${k}" style="--c:${lc(k)}"><i class="ucsig" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></i>${nn ? `<span class="newtag ucnew">${nn} ${nn===1?"novo":"novos"}</span>` : ""}<b>${esc(LUC[k].s)}</b><strong>${n ? plural(n,"ficheiro","ficheiros") : "vazio"}</strong><span>${ult}</span></button>`;
+        const inf = SEM1[k] || { n:LUC[k].s };
+        return `<button class="uccard" type="button" data-uc="${k}" style="--c:${lc(k)}"><i class="ucsig" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></i>${nn ? `<span class="newtag ucnew">${nn} ${nn===1?"novo":"novos"}</span>` : ""}<b>${esc(inf.n)}</b>${inf.ects ? `<em class="ucects">${inf.ects} ECTS</em>` : `<em class="ucects">documentos gerais</em>`}<strong>${n ? plural(n,"ficheiro","ficheiros") : "vazio"}</strong><span>${ult}</span></button>`;
       }).join("") + `</div>` + (files.length ? "" : `<p class="libempty">A biblioteca ainda está vazia. Usa “Adicionar” para pôr lá o primeiro ficheiro.</p>`)
         + `<div class="semh sem2"><h3>1.º ano · 2.º semestre</h3><span class="emdev">🚧 Em desenvolvimento</span></div>
            <p class="semaviso">Estas cadeiras abrem na biblioteca quando começar o 2.º semestre. Até lá ainda não dá para adicionar ficheiros.</p>
-           <div class="ucgrid sem2g">` + SEM2.map(c => `<div class="uccard off" style="--c:${c.c}" aria-disabled="true"><i class="ucsig" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${c.i}</svg></i><b>${esc(c.n)}</b><strong>${c.ects} ECTS</strong><span>em breve</span></div>`).join("") + `</div>`;
+           <div class="ucgrid sem2g">` + SEM2.map(c => `<div class="uccard off" style="--c:${c.c}" aria-disabled="true"><i class="ucsig" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${c.i}</svg></i><b>${esc(c.n)}</b><em class="ucects">${c.ects} ECTS</em><strong>em breve</strong></div>`).join("") + `</div>`;
       return;
     }
 
