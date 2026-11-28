@@ -1075,6 +1075,9 @@ function showView(v){
   document.getElementById("view-lib").hidden = v!=="lib";
   document.getElementById("view-eve").hidden = v!=="eve";
   document.body.classList.toggle("larga", v!=="aval");
+  // ao voltar às Avaliações, a agenda fica logo a ocupar o ecrã (sem um frame centrado pelo meio)
+  const agEl = document.getElementById("agenda");
+  document.body.classList.toggle("ag-on", v==="aval" && !!agEl && !agEl.hidden);
   if(window.Lib) Lib.badge();
   if(v==="lib") Lib.open();
   if(window.Eve) Eve.abrir(v==="eve");
