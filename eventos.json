@@ -1,0 +1,85 @@
+{
+  "atualizado": "2026-11-28",
+  "eventos": [
+    {
+      "id": "isla-torneios-26",
+      "t": "Torneios Desportivos 2026",
+      "d": "2026-11-30",
+      "fim": "2026-12-07",
+      "local": "ISLA Gaia",
+      "cat": "isla",
+      "x": "Duas jornadas: 30 de novembro e 7 de dezembro.",
+      "link": "https://www.islagaia.pt/pt/agenda-de-eventos/torneios-desportivos-2026"
+    },
+    {
+      "id": "isla-feira-26",
+      "t": "X Feira de Estágios e Empregabilidade",
+      "d": "2026-12-02",
+      "local": "ISLA Gaia",
+      "cat": "isla",
+      "x": "Empresas à procura de estagiários e recém-licenciados. Leva o CV.",
+      "link": "https://www.islagaia.pt/pt/agenda-de-eventos/x-edicao-feira-de-estagios-e-empregabilidade"
+    },
+    {
+      "id": "isla-conversas-26",
+      "t": "Conversas Difíceis: Como Dizer o que Precisa de Ser Dito",
+      "d": "2026-12-15",
+      "local": "ISLA Gaia",
+      "cat": "isla",
+      "x": "Sessão sobre comunicação em situações difíceis.",
+      "link": "https://www.islagaia.pt/pt/agenda-de-eventos/conversas-dificeis-como-dizer-o-que-precisa-de-ser-dito"
+    },
+    {
+      "id": "tecstorm-27",
+      "t": "TecStorm’27",
+      "d": "2027-04-16",
+      "fim": "2027-04-18",
+      "local": "Lisboa · sede da Fidelidade",
+      "cat": "hack",
+      "prazo": "2026-12-13",
+      "x": "O maior hackathon universitário do país. Equipas de 3 a 5 estudantes de qualquer curso, desafios reais de empresas e mais de 18 mil € em prémios.",
+      "link": "https://www.tecstorm.pt"
+    },
+    {
+      "id": "pycon-pt-27",
+      "t": "PyCon Portugal 2027",
+      "d": "2027-04-22",
+      "fim": "2027-04-24",
+      "local": "Leiria",
+      "cat": "conf",
+      "top": "Sugerido pelo prof. de BD",
+      "x": "Três dias de palestras e workshops de Python, para principiantes e profissionais. Bilhete de estudante desde 25 €.",
+      "link": "https://2027.pycon.pt/"
+    },
+    {
+      "id": "enei-27",
+      "t": "ENEI 2027 · Encontro Nacional de Estudantes de Informática",
+      "d": "2027-04-01",
+      "semData": true,
+      "local": "Faro",
+      "cat": "conf",
+      "x": "Palestras, workshops e feira de empresas feitos por e para estudantes de Informática. A data ainda não foi anunciada.",
+      "link": "https://eneiconf.pt/"
+    },
+    {
+      "id": "jnation-27",
+      "t": "JNation 2027",
+      "d": "2027-05-25",
+      "fim": "2027-05-26",
+      "local": "Coimbra · Convento São Francisco",
+      "cat": "conf",
+      "x": "Conferência para quem programa: Java, JavaScript, cloud, IA e segurança. Costuma esgotar.",
+      "link": "https://jnation.pt/"
+    },
+    {
+      "id": "websummit-27",
+      "t": "Web Summit 2027",
+      "d": "2027-11-08",
+      "fim": "2027-11-11",
+      "local": "Lisboa",
+      "cat": "conf",
+      "x": "Uma das maiores conferências de tecnologia da Europa: startups, empresas e investidores.",
+      "link": "https://websummit.com/"
+    }
+  ]
+}
