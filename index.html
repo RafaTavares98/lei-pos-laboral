@@ -15,8 +15,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>try{var t=localStorage.getItem("lei-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <script>(function(){var q=new URLSearchParams(location.search).get("estacao");var d=new Date(),k=(d.getMonth()+1)*100+d.getDate();
-var e=(k>=1128||k<=106)?"natal":(k>=321&&k<=620)?"primavera":(k>=621&&k<=922)?"verao":(k>=923&&k<=1220)?"outono":"inverno";
-if(["primavera","verao","outono","inverno","natal"].indexOf(q)>=0)e=q;if(q==="normal")e="";
+var e=(k>=321&&k<=620)?"primavera":(k>=621&&k<=922)?"verao":(k>=923&&k<=1220)?"outono":"inverno";
+var y=d.getFullYear(),a=y%19,b=Math.floor(y/100),c=y%100,h=(19*a+b-Math.floor(b/4)-Math.floor((8*b+13)/25)+15)%30,l=(32+2*(b%4)+2*Math.floor(c/4)-h-c%4)%7,m=Math.floor((a+11*h+22*l)/451),pm=Math.floor((h+l-7*m+114)/31),pd=(h+l-7*m+114)%31+1;
+var P=new Date(y,pm-1,pd),hoje=new Date(y,d.getMonth(),d.getDate()),dd=Math.round((hoje-P)/864e5);
+if(k>=1024&&k<=1101)e="halloween";if(k>=1108&&k<=1111)e="saomartinho";if(k>=1128&&k<=1230)e="natal";if(k>=1231||k<=106)e="anonovo";
+if(k>=210&&k<=214)e="namorados";if(dd>=-51&&dd<=-47)e="carnaval";if(dd>=-7&&dd<=1)e="pascoa";if(k>=422&&k<=425)e="abril";if(k>=610&&k<=624)e="santos";
+if(["primavera","verao","outono","inverno","natal","anonovo","namorados","carnaval","pascoa","abril","santos","halloween","saomartinho"].indexOf(q)>=0)e=q;if(q==="normal")e="";
 if(e)document.documentElement.dataset.season=e;})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -339,6 +343,15 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
 footer b{color:var(--term);font-weight:600;font-family:var(--mono)}
+:root[data-season="anonovo"] body{padding-top:58px}
+:root[data-season="namorados"] body{padding-top:58px}
+:root[data-season="carnaval"] body{padding-top:58px}
+:root[data-season="pascoa"] body{padding-top:58px}
+:root[data-season="abril"] body{padding-top:58px}
+:root[data-season="santos"] body{padding-top:58px}
+:root[data-season="halloween"] body{padding-top:58px}
+:root[data-season="saomartinho"] body{padding-top:58px}
+@media (min-width:901px){:root[data-season="anonovo"] body{padding-top:84px}:root[data-season="namorados"] body{padding-top:84px}:root[data-season="carnaval"] body{padding-top:84px}:root[data-season="pascoa"] body{padding-top:84px}:root[data-season="abril"] body{padding-top:84px}:root[data-season="santos"] body{padding-top:84px}:root[data-season="halloween"] body{padding-top:84px}:root[data-season="saomartinho"] body{padding-top:84px}}
 :root[data-season="natal"] body{padding-top:54px}
 @media (min-width:901px){:root[data-season="natal"] body{padding-top:78px;padding-inline:70px;padding-bottom:84px}}
 #luzes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
@@ -650,6 +663,30 @@ body.ag-fit .ag-chips span{-webkit-line-clamp:2}
 @media (max-width:560px){.fresh{border-radius:14px;font-size:13px;gap:2px 8px}.fresh .sep{display:none}}
 
 /* ---------- Natal ---------- */
+:root[data-season="anonovo"]{--title-a:#B8860B;--title-b:#6D5BD0;--season-ink:#B8860B;--season-soft:rgba(184,134,11,0.1);--bg-glow1:rgba(184,134,11,0.12);--bg-glow2:rgba(109,91,208,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="anonovo"]:not([data-theme="light"]){--title-a:#F5CE62;--title-b:#C8B8FF;--season-ink:#F5CE62;--season-soft:rgba(245,206,98,0.14);--bg-glow1:rgba(245,206,98,0.14);--bg-glow2:rgba(200,184,255,0.09)}}
+:root[data-season="anonovo"][data-theme="dark"]{--title-a:#F5CE62;--title-b:#C8B8FF;--season-ink:#F5CE62;--season-soft:rgba(245,206,98,0.14);--bg-glow1:rgba(245,206,98,0.14);--bg-glow2:rgba(200,184,255,0.09)}
+:root[data-season="namorados"]{--title-a:#D6336C;--title-b:#E8578A;--season-ink:#D6336C;--season-soft:rgba(214,51,108,0.1);--bg-glow1:rgba(214,51,108,0.12);--bg-glow2:rgba(232,87,138,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="namorados"]:not([data-theme="light"]){--title-a:#FF8FAB;--title-b:#FFC2D1;--season-ink:#FF8FAB;--season-soft:rgba(255,143,171,0.14);--bg-glow1:rgba(255,143,171,0.14);--bg-glow2:rgba(255,194,209,0.09)}}
+:root[data-season="namorados"][data-theme="dark"]{--title-a:#FF8FAB;--title-b:#FFC2D1;--season-ink:#FF8FAB;--season-soft:rgba(255,143,171,0.14);--bg-glow1:rgba(255,143,171,0.14);--bg-glow2:rgba(255,194,209,0.09)}
+:root[data-season="carnaval"]{--title-a:#8B3FD9;--title-b:#E8590C;--season-ink:#8B3FD9;--season-soft:rgba(139,63,217,0.1);--bg-glow1:rgba(139,63,217,0.12);--bg-glow2:rgba(232,89,12,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="carnaval"]:not([data-theme="light"]){--title-a:#C08CFF;--title-b:#FFB15C;--season-ink:#C08CFF;--season-soft:rgba(192,140,255,0.14);--bg-glow1:rgba(192,140,255,0.14);--bg-glow2:rgba(255,177,92,0.09)}}
+:root[data-season="carnaval"][data-theme="dark"]{--title-a:#C08CFF;--title-b:#FFB15C;--season-ink:#C08CFF;--season-soft:rgba(192,140,255,0.14);--bg-glow1:rgba(192,140,255,0.14);--bg-glow2:rgba(255,177,92,0.09)}
+:root[data-season="pascoa"]{--title-a:#5E9A3A;--title-b:#C9708F;--season-ink:#5E9A3A;--season-soft:rgba(94,154,58,0.1);--bg-glow1:rgba(94,154,58,0.12);--bg-glow2:rgba(201,112,143,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="pascoa"]:not([data-theme="light"]){--title-a:#B5E08A;--title-b:#F5A8C8;--season-ink:#B5E08A;--season-soft:rgba(181,224,138,0.14);--bg-glow1:rgba(181,224,138,0.14);--bg-glow2:rgba(245,168,200,0.09)}}
+:root[data-season="pascoa"][data-theme="dark"]{--title-a:#B5E08A;--title-b:#F5A8C8;--season-ink:#B5E08A;--season-soft:rgba(181,224,138,0.14);--bg-glow1:rgba(181,224,138,0.14);--bg-glow2:rgba(245,168,200,0.09)}
+:root[data-season="abril"]{--title-a:#C81E1E;--title-b:#2F8F3A;--season-ink:#C81E1E;--season-soft:rgba(200,30,30,0.1);--bg-glow1:rgba(200,30,30,0.12);--bg-glow2:rgba(47,143,58,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="abril"]:not([data-theme="light"]){--title-a:#FF6B6B;--title-b:#7FD38A;--season-ink:#FF6B6B;--season-soft:rgba(255,107,107,0.14);--bg-glow1:rgba(255,107,107,0.14);--bg-glow2:rgba(127,211,138,0.09)}}
+:root[data-season="abril"][data-theme="dark"]{--title-a:#FF6B6B;--title-b:#7FD38A;--season-ink:#FF6B6B;--season-soft:rgba(255,107,107,0.14);--bg-glow1:rgba(255,107,107,0.14);--bg-glow2:rgba(127,211,138,0.09)}
+:root[data-season="santos"]{--title-a:#E03131;--title-b:#E8920C;--season-ink:#E03131;--season-soft:rgba(224,49,49,0.1);--bg-glow1:rgba(224,49,49,0.12);--bg-glow2:rgba(232,146,12,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="santos"]:not([data-theme="light"]){--title-a:#FF8787;--title-b:#FFD43B;--season-ink:#FF8787;--season-soft:rgba(255,135,135,0.14);--bg-glow1:rgba(255,135,135,0.14);--bg-glow2:rgba(255,212,59,0.09)}}
+:root[data-season="santos"][data-theme="dark"]{--title-a:#FF8787;--title-b:#FFD43B;--season-ink:#FF8787;--season-soft:rgba(255,135,135,0.14);--bg-glow1:rgba(255,135,135,0.14);--bg-glow2:rgba(255,212,59,0.09)}
+:root[data-season="halloween"]{--title-a:#E8590C;--title-b:#7048E8;--season-ink:#E8590C;--season-soft:rgba(232,89,12,0.1);--bg-glow1:rgba(232,89,12,0.12);--bg-glow2:rgba(112,72,232,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="halloween"]:not([data-theme="light"]){--title-a:#FFA94D;--title-b:#B197FC;--season-ink:#FFA94D;--season-soft:rgba(255,169,77,0.14);--bg-glow1:rgba(255,169,77,0.14);--bg-glow2:rgba(177,151,252,0.09)}}
+:root[data-season="halloween"][data-theme="dark"]{--title-a:#FFA94D;--title-b:#B197FC;--season-ink:#FFA94D;--season-soft:rgba(255,169,77,0.14);--bg-glow1:rgba(255,169,77,0.14);--bg-glow2:rgba(177,151,252,0.09)}
+:root[data-season="saomartinho"]{--title-a:#8B4513;--title-b:#C76A0A;--season-ink:#8B4513;--season-soft:rgba(139,69,19,0.1);--bg-glow1:rgba(139,69,19,0.12);--bg-glow2:rgba(199,106,10,0.1)}
+@media (prefers-color-scheme:dark){:root[data-season="saomartinho"]:not([data-theme="light"]){--title-a:#E0A872;--title-b:#F5B94C;--season-ink:#E0A872;--season-soft:rgba(224,168,114,0.14);--bg-glow1:rgba(224,168,114,0.14);--bg-glow2:rgba(245,185,76,0.09)}}
+:root[data-season="saomartinho"][data-theme="dark"]{--title-a:#E0A872;--title-b:#F5B94C;--season-ink:#E0A872;--season-soft:rgba(224,168,114,0.14);--bg-glow1:rgba(224,168,114,0.14);--bg-glow2:rgba(245,185,76,0.09)}
 :root[data-season="natal"]{--title-a:#C62D35;--title-b:#C08A12;--season-ink:#B3262E;--season-soft:rgba(198,45,53,.10);--bg:#FBF7F3;--bg-glow1:rgba(198,45,53,.11);--bg-glow2:rgba(31,122,77,.10)}
 @media (prefers-color-scheme:dark){:root[data-season="natal"]:not([data-theme="light"]){--title-a:#F0646A;--title-b:#F2C25A;--season-ink:#F49A9A;--season-soft:rgba(242,124,124,.14);--bg:#121620;--bg-glow1:rgba(230,90,90,.14);--bg-glow2:rgba(80,190,130,.09)}}
 :root[data-season="natal"][data-theme="dark"]{--title-a:#F0646A;--title-b:#F2C25A;--season-ink:#F49A9A;--season-soft:rgba(242,124,124,.14);--bg:#121620;--bg-glow1:rgba(230,90,90,.14);--bg-glow2:rgba(80,190,130,.09)}
@@ -1342,7 +1379,7 @@ setTimeout(Lib.prefetch, 300);
 (function(){
   const est = document.documentElement.dataset.season || "";
   const pill = document.getElementById("seasonPill");
-  const NOMES = { primavera: "🌸 Primavera", verao: "☀️ Verão", outono: "🍂 Outono", inverno: "❄️ Inverno", natal: "🎄 Natal" };
+  const NOMES = { primavera: "🌸 Primavera", verao: "☀️ Verão", outono: "🍂 Outono", inverno: "❄️ Inverno", natal: "🎄 Natal", anonovo: "🎆 Ano Novo", namorados: "💘 Dia dos Namorados", carnaval: "🎭 Carnaval", pascoa: "🐣 Páscoa", abril: "🌹 25 de Abril", santos: "🎉 Santos Populares", halloween: "🎃 Halloween", saomartinho: "🌰 São Martinho" };
   if(pill && NOMES[est]){ pill.textContent = NOMES[est]; pill.hidden = false; }
 
   const c = document.getElementById("sky"), x = c.getContext("2d");
@@ -1654,6 +1691,139 @@ setTimeout(Lib.prefetch, 300);
       for(let i = 0; i < (pcN ? 10 : 4); i++){ x.globalAlpha = (dark ? .45 : .35) + R2() * .3; brilho(R2() * W, R2() * H, 2.5 + R2() * 3, dark ? "#F5D08A" : "#C9973A"); }
       x.globalAlpha = 1;
       if(luzesHTML){ const box = document.createElement("div"); box.id = "luzes"; box.setAttribute("aria-hidden", "true"); box.innerHTML = luzesHTML; c.after(box); }
+    }
+    // ---------------- festividades ----------------
+    const FEST = ["anonovo","namorados","carnaval","pascoa","abril","santos","halloween","saomartinho"];
+    if(FEST.indexOf(est) >= 0){
+      const R = rng(est.length * 977 + 31), pcF = W > 900, Hv = Math.min(H, window.innerHeight || H);
+      const pick = arr => arr[Math.floor(R() * arr.length)];
+      const coracao = (px, py, s, ang, cor) => { x.save(); x.translate(px, py); x.rotate(ang); x.scale(s / 16, s / 16); x.fillStyle = cor; x.beginPath();
+        x.moveTo(0, 5); x.bezierCurveTo(-14, -4, -8, -16, 0, -8); x.bezierCurveTo(8, -16, 14, -4, 0, 5); x.fill(); x.restore(); };
+      const confete = (px, py, s, ang, cor) => { x.save(); x.translate(px, py); x.rotate(ang); x.fillStyle = cor; x.fillRect(-s / 2, -s / 4, s, s / 2); x.restore(); };
+      const fogo = (px, py, r, cor) => { x.save(); x.translate(px, py); x.strokeStyle = cor; x.fillStyle = cor; x.lineCap = "round";
+        const n = 14 + Math.floor(R() * 6);
+        for(let i = 0; i < n; i++){ const a = i / n * 6.283 + R() * .2, r1 = r * (.25 + R() * .1), r2 = r * (.75 + R() * .25);
+          x.lineWidth = 1.6; x.beginPath(); x.moveTo(Math.cos(a) * r1, Math.sin(a) * r1); x.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); x.stroke();
+          x.beginPath(); x.arc(Math.cos(a) * (r2 + 4), Math.sin(a) * (r2 + 4), 1.8, 0, 6.283); x.fill(); }
+        x.restore(); };
+      const ovo = (px, py, s, ang, c1, c2) => { x.save(); x.translate(px, py); x.rotate(ang); x.scale(s, s);
+        x.fillStyle = c1; x.beginPath(); x.moveTo(0, -1.25); x.bezierCurveTo(.85, -1.2, 1, .25, .9, .45); x.bezierCurveTo(.75, 1.1, -.75, 1.1, -.9, .45); x.bezierCurveTo(-1, .25, -.85, -1.2, 0, -1.25); x.fill();
+        x.strokeStyle = c2; x.lineWidth = .14; x.beginPath(); for(let i = 0; i <= 8; i++) x.lineTo(-.92 + i * .23, i % 2 ? -.05 : .2); x.stroke();
+        x.fillStyle = c2; [[-.4,-.55],[0,-.7],[.4,-.55],[-.3,.6],[.3,.6]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, .09, 0, 6.283); x.fill(); });
+        x.restore(); };
+      const cravo = (px, py, s, ang) => { x.save(); x.translate(px, py); x.rotate(ang); x.scale(s, s);
+        x.strokeStyle = dark ? "#5FB36E" : "#2F7D3A"; x.lineWidth = .14; x.lineCap = "round"; x.beginPath(); x.moveTo(0, .4); x.quadraticCurveTo(.15, 1.6, -.1, 2.6); x.stroke();
+        x.beginPath(); x.moveTo(.05, 1.4); x.quadraticCurveTo(.6, 1.2, .8, .8); x.stroke();
+        x.fillStyle = dark ? "#5FB36E" : "#2F7D3A"; x.beginPath(); x.moveTo(-.25, .1); x.lineTo(.25, .1); x.lineTo(.12, .55); x.lineTo(-.12, .55); x.closePath(); x.fill();
+        const cs = dark ? ["#FF5C5C", "#E03B3B", "#FF8080"] : ["#D11F1F", "#B31414", "#E43C3C"];
+        for(let j = 0; j < 3; j++){ x.fillStyle = cs[j]; x.beginPath();
+          for(let i = 0; i <= 14; i++){ const a = Math.PI + i / 14 * Math.PI, rr = (.75 - j * .15) * (i % 2 ? 1 : .8); x.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .9 + .1 - j * .05); }
+          x.closePath(); x.fill(); }
+        x.restore(); };
+      const abobora = (px, py, s) => { x.save(); x.translate(px, py); x.scale(s, s);
+        x.fillStyle = dark ? "#F08C2E" : "#E8740C"; [-.45, .45, 0].forEach(o => { x.beginPath(); x.ellipse(o, 0, .55, .7, 0, 0, 6.283); x.fill(); });
+        x.strokeStyle = "rgba(0,0,0,.18)"; x.lineWidth = .05; [-.3, .3].forEach(o => { x.beginPath(); x.ellipse(o, 0, .2, .66, 0, 0, 6.283); x.stroke(); });
+        x.fillStyle = "#4A6B2A"; x.fillRect(-.08, -.95, .16, .3);
+        x.fillStyle = dark ? "#2A1A08" : "#3A2305"; [[-.35, -.12], [.35, -.12]].forEach(([a, b]) => { x.beginPath(); x.moveTo(a - .14, b + .1); x.lineTo(a, b - .14); x.lineTo(a + .14, b + .1); x.closePath(); x.fill(); });
+        x.beginPath(); x.moveTo(-.45, .2); x.quadraticCurveTo(0, .55, .45, .2); x.quadraticCurveTo(0, .38, -.45, .2); x.fill(); x.restore(); };
+      const morcego = (px, py, s, cor) => { x.save(); x.translate(px, py); x.scale(s, s); x.fillStyle = cor; x.beginPath();
+        x.moveTo(0, -.15); x.quadraticCurveTo(-.4, -.55, -1, -.3); x.quadraticCurveTo(-.85, -.1, -.95, .15); x.quadraticCurveTo(-.7, 0, -.55, .2); x.quadraticCurveTo(-.4, .05, -.2, .25); x.lineTo(0, .1);
+        x.lineTo(.2, .25); x.quadraticCurveTo(.4, .05, .55, .2); x.quadraticCurveTo(.7, 0, .95, .15); x.quadraticCurveTo(.85, -.1, 1, -.3); x.quadraticCurveTo(.4, -.55, 0, -.15); x.fill();
+        x.beginPath(); x.moveTo(-.12, -.18); x.lineTo(-.1, -.36); x.lineTo(0, -.2); x.lineTo(.1, -.36); x.lineTo(.12, -.18); x.fill(); x.restore(); };
+      const castanha = (px, py, s, ang) => { x.save(); x.translate(px, py); x.rotate(ang); x.scale(s, s);
+        x.fillStyle = dark ? "#A0522D" : "#7B3F1D"; x.beginPath(); x.moveTo(0, -1); x.quadraticCurveTo(1, -.3, .8, .5); x.quadraticCurveTo(0, .9, -.8, .5); x.quadraticCurveTo(-1, -.3, 0, -1); x.fill();
+        x.fillStyle = dark ? "#E8C9A0" : "#D9B58A"; x.beginPath(); x.ellipse(0, .55, .75, .22, 0, 0, 6.283); x.fill();
+        x.fillStyle = "rgba(255,255,255,.35)"; x.beginPath(); x.ellipse(-.3, -.3, .12, .3, -.5, 0, 6.283); x.fill(); x.restore(); };
+      const mascara = (px, py, s, ang, cor) => { x.save(); x.translate(px, py); x.rotate(ang); x.scale(s, s); x.fillStyle = cor; x.beginPath();
+        x.moveTo(-1, -.3); x.quadraticCurveTo(-.5, -.55, 0, -.25); x.quadraticCurveTo(.5, -.55, 1, -.3); x.quadraticCurveTo(1, .45, .45, .4); x.quadraticCurveTo(.1, .35, 0, .1); x.quadraticCurveTo(-.1, .35, -.45, .4); x.quadraticCurveTo(-1, .45, -1, -.3); x.fill();
+        x.fillStyle = dark ? "#13151F" : "#FFFFFF"; [-.45, .45].forEach(o => { x.beginPath(); x.ellipse(o, -.02, .22, .13, 0, 0, 6.283); x.fill(); });
+        x.fillStyle = "#F5C542"; [-.9, -.6, .6, .9].forEach(o => { x.beginPath(); x.arc(o, -.35, .07, 0, 6.283); x.fill(); }); x.restore(); };
+      const balao = (px, py, s, cor) => { x.save(); x.translate(px, py); x.scale(s, s);
+        x.strokeStyle = dark ? "rgba(230,230,240,.5)" : "rgba(60,60,70,.45)"; x.lineWidth = .04; x.beginPath(); x.moveTo(0, -1.8); x.lineTo(0, -.9); x.stroke();
+        x.fillStyle = cor; x.beginPath(); x.ellipse(0, 0, .75, .9, 0, 0, 6.283); x.fill();
+        x.strokeStyle = "rgba(255,255,255,.45)"; x.lineWidth = .06; [-.4, 0, .4].forEach(o => { x.beginPath(); x.ellipse(0, 0, Math.abs(o) * 1.4 + .05, .9, 0, -1.4, 1.4); x.stroke(); });
+        x.fillStyle = "rgba(0,0,0,.25)"; x.fillRect(-.3, .82, .6, .16); x.fillRect(-.3, -1, .6, .14); x.restore(); };
+      const manjerico = (px, py, s) => { x.save(); x.translate(px, py); x.scale(s, s);
+        x.fillStyle = dark ? "#C9744A" : "#B5562C"; x.beginPath(); x.moveTo(-.55, 0); x.lineTo(.55, 0); x.lineTo(.42, .8); x.lineTo(-.42, .8); x.closePath(); x.fill();
+        x.fillStyle = dark ? "#5FBF6E" : "#2E8B3E"; x.beginPath(); x.arc(0, -.45, .55, 0, 6.283); x.arc(-.35, -.2, .35, 0, 6.283); x.arc(.35, -.2, .35, 0, 6.283); x.fill();
+        x.strokeStyle = dark ? "#DDD" : "#666"; x.lineWidth = .04; x.beginPath(); x.moveTo(.2, -.6); x.lineTo(.55, -1.25); x.stroke();
+        x.fillStyle = "#E03131"; x.beginPath(); x.arc(.6, -1.35, .16, 0, 6.283); x.fill();
+        x.fillStyle = "#F59F00"; x.beginPath(); x.moveTo(.55, -1.25); x.lineTo(.95, -1.12); x.lineTo(.55, -1.0); x.fill(); x.restore(); };
+
+      // faixa no topo (o conteúdo começa abaixo dela) + cantos
+      const TB = pcF ? 66 : 46;
+      const fio = (base, sag, n, desenha, cor) => {           // fio com festões; desenha(x, y, i) em cada ponto
+        const seg = W / n, yy = t => base + sag * Math.sin(Math.PI * ((t % seg) / seg));
+        x.globalAlpha = 1; x.strokeStyle = cor || (dark ? "rgba(220,220,230,.5)" : "rgba(80,80,90,.45)"); x.lineWidth = 1;
+        x.beginPath(); for(let t = 0; t <= W; t += 5) t ? x.lineTo(t, yy(t)) : x.moveTo(t, yy(t)); x.stroke();
+        let i = 0; const passo = pcF ? 46 : 34;
+        for(let t = passo / 2; t < W; t += passo) desenha(t, yy(t), i++);
+      };
+      if(est === "anonovo"){
+        const cs = dark ? ["#F5CE62", "#C8B8FF", "#FF8FC7", "#7FD3E0", "#FFFFFF"] : ["#D4A017", "#7B68EE", "#E0559A", "#2AA9BE", "#9A9AB0"];
+        for(let t = pcF ? 60 : 30, i = 0; t < W; t += pcF ? 190 : 110, i++){ x.globalAlpha = dark ? .8 : .7; fogo(t + (R() - .5) * 40, TB * (.35 + R() * .3), (i % 2 ? .55 : .8) * (pcF ? 34 : 22), cs[i % cs.length]); }
+        for(let i = 0; i < (pcF ? 90 : 30); i++){ x.globalAlpha = .55 + R() * .4; confete(R() * W, R() * TB * 1.1, 4 + R() * 4, R() * 6.283, pick(cs)); }
+        pontos(R, W, H, pcF ? 8 : 4, pcF ? 14 : 4).forEach(([px, py, perto]) => { if(py < TB) return; x.globalAlpha = (dark ? .4 : .35) + perto * .3; confete(px, py, 6 + R() * 4, R() * 6.283, pick(cs)); });
+        for(let i = 0; i < (pcF ? 24 : 8); i++){ x.globalAlpha = .5 + R() * .4; brilho(R() * W, R() * H, 2 + R() * 3.5, pick(cs)); }
+      }
+      if(est === "namorados"){
+        const cs = dark ? ["#FF8FAB", "#FF5D8F", "#FFC2D1", "#E64980"] : ["#E64980", "#D6336C", "#F783AC", "#C2255C"];
+        fio(pcF ? 14 : 10, pcF ? 26 : 18, Math.max(3, Math.round(W / 260)), (tx, ty, i) => { x.globalAlpha = .9;
+          x.strokeStyle = dark ? "rgba(230,230,240,.4)" : "rgba(90,90,100,.4)"; x.beginPath(); x.moveTo(tx, ty); x.lineTo(tx, ty + 6 + (i % 3) * 5); x.stroke();
+          coracao(tx, ty + 14 + (i % 3) * 5, (pcF ? 15 : 11) + (i % 2) * 4, (i % 2 ? .15 : -.15), cs[i % cs.length]); });
+        pontos(R, W, H, pcF ? 8 : 4, pcF ? 16 : 5).forEach(([px, py, perto]) => { if(py < TB + 10) return; x.globalAlpha = (dark ? .35 : .3) + perto * .3; coracao(px, py, (pcF ? 12 : 9) + R() * 10, (R() - .5) * .7, pick(cs)); });
+      }
+      if(est === "carnaval"){
+        const cs = ["#F03E3E", "#F59F00", "#37B24D", "#1C7ED6", "#AE3EC9", "#F76707", "#FCC419"];
+        x.lineCap = "round";
+        for(let j = 0; j < 4; j++){ x.globalAlpha = dark ? .75 : .7; x.strokeStyle = cs[j * 2 % cs.length]; x.lineWidth = 2.6; x.beginPath();
+          for(let t = 0; t <= W; t += 6){ const y = TB * (.25 + j * .17) + Math.sin(t / (28 + j * 6) + j) * 7; t ? x.lineTo(t, y) : x.moveTo(t, y); } x.stroke(); }
+        for(let i = 0; i < (pcF ? 110 : 40); i++){ x.globalAlpha = .6 + R() * .35; confete(R() * W, R() * TB * 1.15, 5 + R() * 4, R() * 6.283, pick(cs)); }
+        pontos(R, W, H, pcF ? 6 : 3, pcF ? 18 : 6).forEach(([px, py, perto]) => { if(py < TB) return; x.globalAlpha = (dark ? .45 : .4) + perto * .3; confete(px, py, 6 + R() * 5, R() * 6.283, pick(cs)); });
+        x.globalAlpha = .95; mascara(pcF ? 70 : 38, TB + (pcF ? 30 : 18), pcF ? 34 : 20, -.25, "#AE3EC9"); mascara(W - (pcF ? 70 : 38), TB + (pcF ? 34 : 20), pcF ? 30 : 18, .3, "#F59F00");
+      }
+      if(est === "pascoa"){
+        const cs = [["#F9C6D3", "#E64980"], ["#C5E8C2", "#2F9E44"], ["#C9DFFF", "#1C7ED6"], ["#FFE8A3", "#F08C00"], ["#E5D4FF", "#7048E8"]];
+        fio(pcF ? 10 : 8, pcF ? 22 : 14, Math.max(3, Math.round(W / 300)), (tx, ty, i) => { const c = cs[i % cs.length]; x.globalAlpha = .95;
+          if(i % 3 === 2) flor(tx, ty + 8, pcF ? 9 : 7, i, c[0], "#F5C542"); else ovo(tx, ty + (pcF ? 16 : 12), pcF ? 11 : 8, (i % 2 ? .2 : -.2), c[0], c[1]); });
+        pontos(R, W, H, pcF ? 7 : 4, pcF ? 12 : 4).forEach(([px, py, perto]) => { if(py < TB + 10) return; const c = pick(cs); x.globalAlpha = (dark ? .5 : .55) + perto * .3;
+          if(R() < .5) ovo(px, py, (pcF ? 10 : 8) + R() * 5, (R() - .5) * .8, c[0], c[1]); else flor(px, py, (pcF ? 8 : 6) + R() * 4, R() * 6.283, c[0], "#F5C542"); });
+      }
+      if(est === "abril"){
+        for(let t = pcF ? 26 : 18, i = 0; t < W; t += pcF ? 44 : 32, i++){ x.globalAlpha = .95; cravo(t, (pcF ? 18 : 12) + (i % 2) * 8, pcF ? 15 : 11, (i % 2 ? .5 : -.5) + Math.PI); }
+        pontos(R, W, H, pcF ? 6 : 3, pcF ? 10 : 3).forEach(([px, py, perto]) => { if(py < TB + 20) return; x.globalAlpha = (dark ? .55 : .6) + perto * .3; cravo(px, py, (pcF ? 13 : 10) + R() * 6, (R() - .5) * 1.2); });
+      }
+      if(est === "santos"){
+        const cs = ["#E03131", "#F59F00", "#2F9E44", "#1C7ED6", "#E64980", "#FCC419", "#7048E8"];
+        [[pcF ? 6 : 4, pcF ? 22 : 14], [pcF ? 20 : 12, pcF ? 18 : 12]].forEach(([base, sag], j) => {
+          fio(base, sag, Math.max(3, Math.round(W / (j ? 220 : 300))), (tx, ty, i) => { const l = pcF ? 22 : 16; x.globalAlpha = .92; x.fillStyle = cs[(i + j * 3) % cs.length];
+            if(j) tx += pcF ? 23 : 17;
+            x.beginPath(); x.moveTo(tx - l / 2, ty); x.lineTo(tx + l / 2, ty); x.lineTo(tx, ty + l * 1.1); x.closePath(); x.fill(); });
+        });
+        x.globalAlpha = .9;
+        balao(pcF ? 60 : 30, TB + (pcF ? 70 : 40), pcF ? 24 : 14, "#E03131"); balao(W - (pcF ? 60 : 30), TB + (pcF ? 80 : 46), pcF ? 26 : 15, "#F59F00");
+        if(pcF){ balao(150, TB + 160, 18, "#1C7ED6"); balao(W - 150, TB + 175, 18, "#2F9E44"); manjerico(46, Hv - 48, 30); manjerico(W - 50, Hv - 52, 32); }
+      }
+      if(est === "halloween"){
+        const cs = ["#F76707", "#2B2B3A", "#7048E8"];
+        fio(pcF ? 8 : 6, pcF ? 20 : 14, Math.max(3, Math.round(W / 280)), (tx, ty, i) => { const l = pcF ? 22 : 16; x.globalAlpha = .9; x.fillStyle = dark && i % 3 === 1 ? "#3D3D52" : cs[i % 3];
+          x.beginPath(); x.moveTo(tx - l / 2, ty); x.lineTo(tx + l / 2, ty); x.lineTo(tx, ty + l * 1.1); x.closePath(); x.fill(); });
+        x.globalAlpha = dark ? .35 : .3; x.strokeStyle = dark ? "#DDE" : "#555"; x.lineWidth = 1; const tr = pcF ? 120 : 70;
+        [[0, 1], [W, -1]].forEach(([ox, sx]) => {
+          for(let i = 0; i <= 6; i++){ const a = i / 6 * Math.PI / 2; x.beginPath(); x.moveTo(ox, 0); x.lineTo(ox + sx * Math.cos(a) * tr, Math.sin(a) * tr); x.stroke(); }
+          for(let r = tr / 4; r <= tr; r += tr / 4){ x.beginPath(); for(let i = 0; i <= 6; i++){ const a = i / 6 * Math.PI / 2, rr = r * (i % 2 ? .9 : 1); const px = ox + sx * Math.cos(a) * rr, py = Math.sin(a) * rr; i ? x.lineTo(px, py) : x.moveTo(px, py); } x.stroke(); }
+        });
+        pontos(R, W, H, pcF ? 5 : 3, pcF ? 10 : 3).forEach(([px, py, perto]) => { if(py < TB) return; x.globalAlpha = (dark ? .55 : .5) + perto * .3; morcego(px, py, (pcF ? 16 : 11) + R() * 8, dark ? "#B197FC" : "#3B2F5C"); });
+        x.globalAlpha = .95; abobora(pcF ? 44 : 26, Hv - (pcF ? 40 : 26), pcF ? 26 : 16); if(pcF){ abobora(96, Hv - 30, 18); abobora(W - 50, Hv - 42, 28); }
+      }
+      if(est === "saomartinho"){
+        const fol = dark ? ["#E9874A", "#D2603A", "#E8AE57"] : ["#D9692B", "#C04A2C", "#DA9B3C"];
+        fio(pcF ? 8 : 6, pcF ? 18 : 12, Math.max(3, Math.round(W / 280)), (tx, ty, i) => { x.globalAlpha = .92;
+          if(i % 2) castanha(tx, ty + (pcF ? 12 : 9), pcF ? 10 : 7, (i % 4 - 1.5) * .3); else acer(tx, ty + (pcF ? 10 : 7), pcF ? 13 : 9, Math.PI + (i % 3 - 1) * .4, fol[i % 3]); });
+        pontos(R, W, H, pcF ? 8 : 4, pcF ? 14 : 4).forEach(([px, py, perto]) => { if(py < TB) return; x.globalAlpha = (dark ? .4 : .45) + perto * .35;
+          if(R() < .5) castanha(px, py, (pcF ? 10 : 7) + R() * 5, R() * 6.283); else acer(px, py, (pcF ? 10 : 7) + R() * 7, R() * 6.283, pick(fol)); });
+      }
+      x.globalAlpha = 1;
     }
     if(est === "inverno"){
       const R = rng(1221), cor = dark ? "#DCE8FA" : "#8FB2DE";
